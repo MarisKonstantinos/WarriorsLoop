@@ -9,10 +9,14 @@ using UnityEngine.UIElements;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private bool isMovementDisabled = false;
+    PlayerInput playerInput;
+    [SerializeField] Camera _Camera;
 
     [Header("Move")]
     [SerializeField] private float movementSpeed;
     private Vector2 moveInput;
+    private Vector2 mousePos;
 
     [Header("Dash")]
     [SerializeField] private float dashPower;
@@ -23,6 +27,22 @@ public class PlayerMovement : MonoBehaviour
     private bool canDash = true;
     //Is used to check the state of the player so he can't be dashing twice.
     private bool isDashing = false;
+
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
+
+    private void OnEnable()
+    {
+        playerInput.enabled = true;
+        GetComponent<HealthComponent>().OnKnockback += DisableMovementFor;
+    }
+    private void OnDisable()
+    {
+        playerInput.enabled = false;
+        GetComponent<HealthComponent>().OnKnockback -= DisableMovementFor;
+    }
 
     private void Start()
     {
@@ -43,15 +63,24 @@ public class PlayerMovement : MonoBehaviour
                 Debug.LogError("DASH READY!");
             }
         }
+        
     }
 
     //Fixed update is good for physics.
     private void FixedUpdate()
     {
-        if (!isDashing)
+        if (isDashing || isMovementDisabled) return;
+
+        rb.velocity = moveInput * movementSpeed;
+
+        //POINTER MOVEMENT DISABLED
+        /*if(_Camera != null)
         {
-            rb.velocity = moveInput * movementSpeed;
-        }
+            Vector2 facingDirection = mousePos - rb.position;
+            float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
+            
+            rb.MoveRotation(angle - 90);
+        }*/
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -69,6 +98,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void OnMousePos(InputAction.CallbackContext context)
+    {
+        /*if (_Camera == null) return;
+        mousePos = _Camera.ScreenToWorldPoint(context.ReadValue<Vector2>());*/
+    }
+
     private IEnumerator Dash(Vector2 direction)
     {
         isDashing = true;
@@ -78,5 +113,17 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(dashDuration);
 
         isDashing = false;
+    }
+
+    private void DisableMovementFor(float time)
+    {
+        StartCoroutine(DisableMovementCoroutine(time));
+    }
+
+    private IEnumerator DisableMovementCoroutine(float time)
+    {
+        isMovementDisabled = true;
+        yield return new WaitForSeconds(time);
+        isMovementDisabled = false;
     }
 }
