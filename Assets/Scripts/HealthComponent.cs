@@ -10,6 +10,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
     private bool isDead = false;
 
     public event Action<float> OnKnockback;
+    //public bool isInvincible { get; set; } = false;
 
     private void Awake()
     {
@@ -22,21 +23,23 @@ public class HealthComponent : MonoBehaviour , IDamageable
     //Positive value = damaging
     public void TakeDamage(float value, Vector2 knockbackDirection, float knockbackPower)
     {
-        currentHealth -= value;
-        if(this.tag == "Player")
+        if(gameObject.layer.ToString() != "Invincibility")
         {
-            Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
-            if(rb != null)
+            currentHealth -= value;
+            //If it's the player knock him back.
+            if(this.tag == "Player")
             {
-                OnKnockback.Invoke(0.2f);
-                //Direction? Mouse direction?
+                Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
+                if(rb != null)
+                {
+                    CombatEffectsManager.Instance.HitPause(0.08f);
+                    OnKnockback.Invoke(0.2f);
+                    rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
+                }
 
-
-                rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
+                Debug.LogError("Current health of " + this.name + ": " + currentHealth);
             }
-            Debug.LogError("Current health of " + this.name + ": " + currentHealth);
         }
-        
     }
 
     void Die()

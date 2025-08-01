@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private HealthComponent healthComponent;
     private bool isMovementDisabled = false;
     PlayerInput playerInput;
     [SerializeField] Camera _Camera;
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        healthComponent = GetComponent<HealthComponent>();
     }
 
     private void OnEnable()
@@ -72,17 +74,9 @@ public class PlayerMovement : MonoBehaviour
         if (isDashing || isMovementDisabled) return;
 
         rb.velocity = moveInput * movementSpeed;
-
-        //POINTER MOVEMENT DISABLED
-        /*if(_Camera != null)
-        {
-            Vector2 facingDirection = mousePos - rb.position;
-            float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
-            
-            rb.MoveRotation(angle - 90);
-        }*/
     }
 
+    #region Input Functions
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
@@ -98,21 +92,32 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void OnMousePos(InputAction.CallbackContext context)
-    {
-        /*if (_Camera == null) return;
-        mousePos = _Camera.ScreenToWorldPoint(context.ReadValue<Vector2>());*/
-    }
+    #endregion
 
+    #region Movement
     private IEnumerator Dash(Vector2 direction)
     {
         isDashing = true;
         canDash = false;
+        ToggleInvincibility(true);
         rb.velocity = moveInput * dashPower;
         dashTimer = dashCooldown;
         yield return new WaitForSeconds(dashDuration);
 
+        ToggleInvincibility(false);
         isDashing = false;
+    }
+
+    private void ToggleInvincibility(bool _isInvincible)
+    {
+        if(_isInvincible)
+        {
+            gameObject.layer = LayerMask.NameToLayer("Invincible");
+        }
+        else
+        {
+            gameObject.layer = LayerMask.NameToLayer("Player");
+        }
     }
 
     private void DisableMovementFor(float time)
@@ -126,4 +131,6 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(time);
         isMovementDisabled = false;
     }
+
+    #endregion
 }
