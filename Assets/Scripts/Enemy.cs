@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour , IAttack
 {
     private Rigidbody2D rb;
     [SerializeField] private float damageValue = 10;
@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float knockbackPower = 10;
     [SerializeField] private LayerMask targetLayer;
     private float damageCooldownTimer;
+
+    [SerializeField] private AttackData[] attackList;
 
     private void Awake()
     {
@@ -44,5 +46,10 @@ public class Enemy : MonoBehaviour
             Vector2 knockbackDirection = (hitPoint - sourcePoint).normalized;
             damageable.TakeDamage(damageValue, knockbackDirection, knockbackPower);
         }
+    }
+
+    public void Execute(Vector2 attackPoint, AttackData attack)
+    {
+        
     }
 }

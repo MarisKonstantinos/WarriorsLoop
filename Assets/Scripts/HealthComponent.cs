@@ -26,19 +26,15 @@ public class HealthComponent : MonoBehaviour , IDamageable
         if(gameObject.layer.ToString() != "Invincibility")
         {
             currentHealth -= value;
-            //If it's the player knock him back.
-            if(this.tag == "Player")
-            {
-                Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
-                if(rb != null)
-                {
-                    CombatEffectsManager.Instance.HitPause(0.08f);
-                    OnKnockback.Invoke(0.2f);
-                    rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
-                }
 
-                Debug.LogError("Current health of " + this.name + ": " + currentHealth);
+            Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                CombatEffectsManager.Instance.HitPause(0.08f);
+                OnKnockback?.Invoke(0.2f);
+                rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
             }
+            Debug.LogError("Current health of " + this.name + ": " + currentHealth);
         }
     }
 

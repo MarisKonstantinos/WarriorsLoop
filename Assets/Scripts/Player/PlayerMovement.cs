@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Move")]
     [SerializeField] private float movementSpeed;
     private Vector2 moveInput;
-    private Vector2 mousePos;
+    private Vector2 lastMoveDirection;
 
     [Header("Dash")]
     [SerializeField] private float dashPower;
@@ -74,6 +74,9 @@ public class PlayerMovement : MonoBehaviour
         if (isDashing || isMovementDisabled) return;
 
         rb.velocity = moveInput * movementSpeed;
+
+        if(moveInput!= Vector2.zero)
+            lastMoveDirection = moveInput;
     }
 
     #region Input Functions
@@ -130,6 +133,18 @@ public class PlayerMovement : MonoBehaviour
         isMovementDisabled = true;
         yield return new WaitForSeconds(time);
         isMovementDisabled = false;
+    }
+
+    public Vector2 GetMoveDirection()
+    {
+        if (moveInput == Vector2.zero)
+        {
+            return lastMoveDirection;
+        }
+        else
+        {
+            return moveInput;
+        }
     }
 
     #endregion
