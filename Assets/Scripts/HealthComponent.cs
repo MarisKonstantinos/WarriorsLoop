@@ -17,8 +17,6 @@ public class HealthComponent : MonoBehaviour , IDamageable
         currentHealth = maxHealth;
     }
 
-
-
     //Negative value = healing
     //Positive value = damaging
     public void TakeDamage(float value, Vector2 knockbackDirection, float knockbackPower)
