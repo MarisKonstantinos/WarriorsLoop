@@ -2,54 +2,64 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour , IAttack
+public class Enemy : MonoBehaviour 
 {
     private Rigidbody2D rb;
-    [SerializeField] private float damageValue = 10;
-    [SerializeField] private float damageCooldown = 1f;
-    [SerializeField] private float knockbackPower = 10;
-    [SerializeField] private LayerMask targetLayer;
-    private float damageCooldownTimer;
-
-    [SerializeField] private AttackData[] attackList;
+    private bool isMovementDisabled = false;
+    [SerializeField] private float movementSpeed;
+    
+    [SerializeField] private LayerMask lineOfSightLayer;
+    [SerializeField] private GameObject target;
+    
+    //Line Of Sight
+    private bool hasLOS;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        damageCooldownTimer = damageCooldown;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if(damageCooldownTimer > 0)
+        GetComponent<HealthComponent>().OnKnockback += DisableMovementFor;
+    }
+
+    private void OnDisable()
+    {
+        GetComponent<HealthComponent>().OnKnockback -= DisableMovementFor;
+    }
+
+    private void FixedUpdate()
+    {
+        if (!target || isMovementDisabled) return;
+
+        Vector2 rayDirection = target.transform.position - transform.position;
+        RaycastHit2D ray = Physics2D.Raycast(transform.position, rayDirection,Mathf.Infinity,lineOfSightLayer);
+        if (ray.collider != null)
         {
-            damageCooldownTimer -= Time.deltaTime;
+            hasLOS = ray.collider.CompareTag("Player");
+            if (hasLOS)
+            {
+                Debug.DrawRay(transform.position, rayDirection, Color.green);
+                rb.velocity = rayDirection.normalized * movementSpeed;
+            }
+            else
+            {
+                Debug.DrawRay(transform.position, rayDirection, Color.red);
+                rb.velocity = Vector2.zero;
+            }
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void DisableMovementFor(float time)
     {
-        //On Trigger Stay instead of Enter to check more regularly but I need to check for cooldown.
-        if (((1 << collision.gameObject.layer) & targetLayer) == 0) return;
-
-        if (damageCooldownTimer > 0) return;
-        
-        if(collision.TryGetComponent(out IDamageable damageable))
-        {
-            if (collision.gameObject.layer.ToString() == "Invincible") return;
-            
-            damageCooldownTimer = damageCooldown;
-
-            Vector2 hitPoint = collision.transform.position;
-            Vector2 sourcePoint = transform.position;
-
-            Vector2 knockbackDirection = (hitPoint - sourcePoint).normalized;
-            damageable.TakeDamage(damageValue, knockbackDirection, knockbackPower);
-        }
+        StartCoroutine(DisableMovementCoroutine(time));
     }
 
-    public void Execute(Vector2 attackPoint, AttackData attack)
+    private IEnumerator DisableMovementCoroutine(float time)
     {
-        
+        isMovementDisabled = true;
+        yield return new WaitForSeconds(time);
+        isMovementDisabled = false;
     }
 }
