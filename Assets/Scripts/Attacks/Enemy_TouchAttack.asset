@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45551bbfda4057f4d906849a84ba98b7, type: 3}
   m_Name: Enemy_TouchAttack
   m_EditorClassIdentifier: 
-  attackName: Melee Attack
+  attackName: TouchAttack
   damage: 10
-  cooldown: 0.1
-  range: 0.6
+  cooldown: 0.2
+  range: 0.5
   knockbackPower: 10
