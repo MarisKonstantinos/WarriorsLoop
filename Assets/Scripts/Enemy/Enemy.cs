@@ -51,6 +51,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void DisableMovement()
+    {
+
+        gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        isMovementDisabled = true;
+    }
+
     private void DisableMovementFor(float time)
     {
         StartCoroutine(DisableMovementCoroutine(time));

@@ -2,13 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class HealthComponent : MonoBehaviour , IDamageable
 {
     [SerializeField] private float maxHealth;
     private float currentHealth;
+    [Min(0),SerializeField]
+    private int enemyScore = 0;
     private bool isDead = false;
-
     public event Action<float> OnKnockback;
     //public bool isInvincible { get; set; } = false;
 
@@ -34,10 +36,33 @@ public class HealthComponent : MonoBehaviour , IDamageable
             }
             Debug.LogError("Current health of " + this.name + ": " + currentHealth);
         }
+
+        if(currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
     void Die()
     {
+        isDead = true;
         
+        if(gameObject.layer == 6)
+        {
+            if(gameObject.TryGetComponent(out PlayerInput input))
+            {
+                input.DeactivateInput();
+            }
+            GameManager.Instance.PlayerDied();
+        }
+
+        if(gameObject.layer == 7)
+        {
+            if(gameObject.TryGetComponent(out Enemy enemy))
+            {
+                enemy.DisableMovement();
+            }
+            GameManager.Instance.EnemyDied(gameObject, enemyScore);
+        }
     }
 }
