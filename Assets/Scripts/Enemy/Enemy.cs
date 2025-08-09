@@ -29,6 +29,12 @@ public class Enemy : MonoBehaviour
         GetComponent<HealthComponent>().OnKnockback -= DisableMovementFor;
     }
 
+    private void Start()
+    {
+        if (!target)
+            target = GameManager.Instance.GetPlayer();
+    }
+
     private void FixedUpdate()
     {
         if (!target || isMovementDisabled) return;

@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private int playerScore = 0;
-    
+    [SerializeField] private GameObject player;
 
     private void Awake()
     {
@@ -19,6 +20,28 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+    }
+
+    private void OnEnable()
+    {
+        if (!player)
+            player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    private void Start()
+    {
+        
+    }
+
+    public GameObject GetPlayer()
+    {
+        if (!player)
+        {
+            Debug.LogError("Returned null.");
+            return null;
+        }
+
+        return player;
     }
 
     public void PlayerDied()
@@ -36,9 +59,8 @@ public class GameManager : MonoBehaviour
 
     public void EnemyDied(GameObject enemy, int score)
     {
-        
         playerScore += score;
-        Debug.LogError("Player score: " + playerScore);
+        UIManager.Instance.ScoreUpdate(playerScore);
         StartCoroutine(DelayDestroyEnemy(enemy));
 
     }

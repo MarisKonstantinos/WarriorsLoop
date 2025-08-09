@@ -12,6 +12,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
     private int enemyScore = 0;
     private bool isDead = false;
     public event Action<float> OnKnockback;
+    public event Action<GameObject> OnEnemyDeath;
     //public bool isInvincible { get; set; } = false;
 
     private void Awake()
@@ -58,6 +59,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
 
         if(gameObject.layer == 7)
         {
+            OnEnemyDeath?.Invoke(gameObject);
             if(gameObject.TryGetComponent(out Enemy enemy))
             {
                 enemy.DisableMovement();

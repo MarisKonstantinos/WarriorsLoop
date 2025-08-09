@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45551bbfda4057f4d906849a84ba98b7, type: 3}
-  m_Name: MeleeAttack
+  m_Script: {fileID: 11500000, guid: 10ff05da3d44853439374c1c1a2c2bcb, type: 3}
+  m_Name: Wave2
   m_EditorClassIdentifier: 
-  attackName: Melee Attack
-  damage: 20
-  cooldown: 0.2
-  range: 0.6
-  knockbackPower: 10
+  enemyCount: 2
+  spawnDelay: 2
+  restDelay: 5
+  enemyPrefab: {fileID: 4201588408042612014, guid: d33f62596f9c48343a75479e56f168c7, type: 3}

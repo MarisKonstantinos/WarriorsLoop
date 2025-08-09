@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -7,6 +8,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     public GameObject gameOverUI;
+    [SerializeField] private TextMeshProUGUI playerScoreTMP;
 
     private void Awake()
     {
@@ -24,5 +26,12 @@ public class UIManager : MonoBehaviour
     public void ToggleGameOverUI(bool toggle)
     {
         gameOverUI.SetActive(toggle);
+    }
+
+    public void ScoreUpdate(int score)
+    {
+        if (!playerScoreTMP) return;
+
+        playerScoreTMP.text = "Score:" + score;
     }
 }
