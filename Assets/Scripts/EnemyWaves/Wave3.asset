@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Wave3
   m_EditorClassIdentifier: 
   enemyCount: 20
-  spawnDelay: 3
+  spawnDelay: 2.5
   restDelay: 7
   enemyPrefab: {fileID: 4201588408042612014, guid: d33f62596f9c48343a75479e56f168c7, type: 3}

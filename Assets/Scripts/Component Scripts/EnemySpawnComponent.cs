@@ -18,6 +18,9 @@ public class EnemySpawnComponent : MonoBehaviour
     private float checkRadius = 0.5f; //How big is the enemy for collision check
     [SerializeField] private LayerMask obstacleLayer;
 
+    //Rune Activation
+    [SerializeField] SpriteFlashing[] runes;
+
     private void Start()
     {
         //Animation
@@ -25,7 +28,11 @@ public class EnemySpawnComponent : MonoBehaviour
 
         currentEnemyWave = enemyWaves[0];
         currentEnemyWaveIndex = 0;
-        spawnEnemyTimer = currentEnemyWave.spawnDelay;
+
+        if(currentEnemyWaveIndex < runes.Length - 1)
+        {
+            runes[currentEnemyWaveIndex].EnableSpriteFlashing();
+        }
     }
 
     private void Update()
@@ -40,6 +47,8 @@ public class EnemySpawnComponent : MonoBehaviour
         }
         else
         {
+            if (aliveEnemies > 0) return;
+
             currentEnemyWave = null;
             if (currentEnemyWaveIndex < enemyWaves.Count - 1)
             {
@@ -47,6 +56,11 @@ public class EnemySpawnComponent : MonoBehaviour
                 currentEnemyWave = enemyWaves[currentEnemyWaveIndex];
                 enemiesSpawned = 0;
                 spawnEnemyTimer = currentEnemyWave.restDelay;
+
+                if (currentEnemyWaveIndex <= runes.Length)
+                {
+                    runes[currentEnemyWaveIndex].EnableSpriteFlashing();
+                }
             }
         }
     }
@@ -103,7 +117,6 @@ public class EnemySpawnComponent : MonoBehaviour
     {
         if (killedEnemy.TryGetComponent(out HealthComponent enemyHealth))
         {
-            Debug.LogError("Unsubscribed.");
             enemyHealth.OnEnemyDeath -= EnemyKilled;
         }
         aliveEnemies--;
