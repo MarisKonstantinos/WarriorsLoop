@@ -8,7 +8,7 @@ public class SpriteFlashing : MonoBehaviour
     [SerializeField] private Color endColor;
     [SerializeField, Range(0.0f, 1.0f)] float speed;
     private SpriteRenderer spriteRenderer;
-    public bool enabled = false;
+    private bool enabled = false;
 
     private void Start()
     {
@@ -25,5 +25,10 @@ public class SpriteFlashing : MonoBehaviour
     public void EnableSpriteFlashing()
     {
         enabled = true;
+    }
+
+    public void ChangeEndColor()
+    {
+
     }
 }
