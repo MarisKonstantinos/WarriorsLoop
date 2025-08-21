@@ -15,11 +15,12 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private Vector2 attackPoint;
     private PlayerMovement playerMovement;
     private float meleeCooldownTimer = 0;
+    private PlayerAnimator playerAnimator;
 
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
-        
+        playerAnimator = GetComponent<PlayerAnimator>();
     }
 
     private void Update()
@@ -39,6 +40,10 @@ public class PlayerCombat : MonoBehaviour, IAttack
             attackPoint = (Vector2)gameObject.transform.localPosition + playerMovement.GetMoveDirection()  / meleeAttackOffset;
 
             Execute(attackPoint, meleeAttack);
+
+            if (!playerAnimator) return;
+
+            playerAnimator.PlayAttack();
         }
     }
 

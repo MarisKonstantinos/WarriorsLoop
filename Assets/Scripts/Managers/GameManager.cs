@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator delayPause()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(2f);
         Time.timeScale = 0f;
     }
 

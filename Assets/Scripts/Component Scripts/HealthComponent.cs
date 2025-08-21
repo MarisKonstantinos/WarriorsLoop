@@ -14,10 +14,11 @@ public class HealthComponent : MonoBehaviour , IDamageable
     public event Action<float> OnKnockback;
     public event Action<GameObject> OnEnemyDeath;
     //public bool isInvincible { get; set; } = false;
-
+    private PlayerAnimator playerAnimator;
     private void Awake()
     {
         currentHealth = maxHealth;
+        playerAnimator = GetComponent<PlayerAnimator>();
     }
 
     //Negative value = healing
@@ -48,6 +49,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
     {
         isDead = true;
         
+        //Player layer
         if(gameObject.layer == 6)
         {
             if(gameObject.TryGetComponent(out PlayerInput input))
@@ -55,8 +57,12 @@ public class HealthComponent : MonoBehaviour , IDamageable
                 input.DeactivateInput();
             }
             GameManager.Instance.PlayerDied();
+            if (!playerAnimator) return;
+
+            gameObject.GetComponent<PlayerAnimator>().PlayDie();
         }
 
+        //Enemy layer
         if(gameObject.layer == 7)
         {
             OnEnemyDeath?.Invoke(gameObject);

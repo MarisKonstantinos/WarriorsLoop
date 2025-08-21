@@ -35,10 +35,13 @@ public class PlayerMovement : MonoBehaviour
     private float lastYPressTime;
     Vector2 bufferedInput = Vector2.zero;
 
+    PlayerAnimator playerAnimator;
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         healthComponent = GetComponent<HealthComponent>();
+        playerAnimator = GetComponent<PlayerAnimator>();
     }
 
     private void OnEnable()
@@ -123,6 +126,17 @@ public class PlayerMovement : MonoBehaviour
 
         if (Mathf.Abs(moveInput.y) > 0.01)
             lastYPressTime = Time.time;
+
+        if (!playerAnimator) return;
+
+        if (moveInput != Vector2.zero)
+        {
+            playerAnimator.PlayMove();
+        }
+        else
+        {
+            playerAnimator.PlayIdle();
+        }
     }
 
     public void OnDash(InputAction.CallbackContext context)
@@ -135,9 +149,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is used for testing purposes. E.g. kill the player immidietly.
+    /// </summary>
+    /// <param name="context"></param>
+    public void OnTest(InputAction.CallbackContext context)
+    {
+        gameObject.GetComponent<HealthComponent>().TakeDamage(100, Vector2.zero, 0);
+    }
+
     #endregion
 
-    #region Movement
+    #region Movement Functions
     private IEnumerator Dash(Vector2 direction)
     {
         isDashing = true;
