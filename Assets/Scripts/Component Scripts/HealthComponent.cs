@@ -28,7 +28,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
         if(gameObject.layer.ToString() != "Invincibility")
         {
             currentHealth -= value;
-
+            
             Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
@@ -37,6 +37,12 @@ public class HealthComponent : MonoBehaviour , IDamageable
                 rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
             }
             Debug.LogError("Current health of " + this.name + ": " + currentHealth);
+
+            //if is player
+            if(gameObject.layer == 6)
+            {
+                playerAnimator.PlayHit();
+            }
         }
 
         if(currentHealth <= 0)
@@ -57,8 +63,10 @@ public class HealthComponent : MonoBehaviour , IDamageable
                 input.DeactivateInput();
             }
             GameManager.Instance.PlayerDied();
-            if (!playerAnimator) return;
 
+            gameObject.GetComponent<CircleCollider2D>().enabled = false;
+
+            if (!playerAnimator) return;
             gameObject.GetComponent<PlayerAnimator>().PlayDie();
         }
 
