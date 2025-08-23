@@ -35,13 +35,13 @@ public class PlayerMovement : MonoBehaviour
     private float lastYPressTime;
     Vector2 bufferedInput = Vector2.zero;
 
-    PlayerAnimator playerAnimator;
+    AnimatorController playerAnimator;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         healthComponent = GetComponent<HealthComponent>();
-        playerAnimator = GetComponent<PlayerAnimator>();
+        playerAnimator = GetComponent<AnimatorController>();
     }
 
     private void OnEnable()

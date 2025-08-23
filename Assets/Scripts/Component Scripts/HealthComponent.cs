@@ -14,11 +14,10 @@ public class HealthComponent : MonoBehaviour , IDamageable
     public event Action<float> OnKnockback;
     public event Action<GameObject> OnEnemyDeath;
     //public bool isInvincible { get; set; } = false;
-    private PlayerAnimator playerAnimator;
+
     private void Awake()
     {
         currentHealth = maxHealth;
-        playerAnimator = GetComponent<PlayerAnimator>();
     }
 
     //Negative value = healing
@@ -41,7 +40,11 @@ public class HealthComponent : MonoBehaviour , IDamageable
             //if is player
             if(gameObject.layer == 6)
             {
-                playerAnimator.PlayHit();
+                gameObject.GetComponent<AnimatorController>().PlayHit();
+            }
+            else
+            {
+                gameObject.GetComponent<AnimatorController>().PlayHit();
             }
         }
 
@@ -65,19 +68,18 @@ public class HealthComponent : MonoBehaviour , IDamageable
             GameManager.Instance.PlayerDied();
 
             gameObject.GetComponent<CircleCollider2D>().enabled = false;
-
-            if (!playerAnimator) return;
-            gameObject.GetComponent<PlayerAnimator>().PlayDie();
+            gameObject.GetComponent<AnimatorController>().PlayDie();
         }
 
         //Enemy layer
         if(gameObject.layer == 7)
         {
             OnEnemyDeath?.Invoke(gameObject);
-            if(gameObject.TryGetComponent(out Enemy enemy))
+            if(gameObject.TryGetComponent(out EnemyMovement enemy))
             {
                 enemy.DisableMovement();
             }
+            
             GameManager.Instance.EnemyDied(gameObject, enemyScore);
         }
     }

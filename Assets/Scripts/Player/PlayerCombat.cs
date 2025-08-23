@@ -15,12 +15,12 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private Vector2 attackPoint;
     private PlayerMovement playerMovement;
     private float meleeCooldownTimer = 0;
-    private PlayerAnimator playerAnimator;
+    private AnimatorController playerAnimator;
 
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
-        playerAnimator = GetComponent<PlayerAnimator>();
+        playerAnimator = GetComponent<AnimatorController>();
     }
 
     private void Update()

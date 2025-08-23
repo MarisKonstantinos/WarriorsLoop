@@ -67,8 +67,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator DelayDestroyEnemy(GameObject enemy)
     {
-        //Play anim
-        yield return new WaitForSeconds(1);
+        enemy.GetComponent<AnimatorController>().PlayDie();
+        yield return new WaitForSeconds(2f);
         Destroy(enemy);
     }
 }

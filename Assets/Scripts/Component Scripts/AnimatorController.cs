@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerAnimator : MonoBehaviour
+public class AnimatorController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private int attackAnimations; //2 different attack animations cycling through
