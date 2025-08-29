@@ -84,7 +84,6 @@ public class EnemyMovement : MonoBehaviour
         yield return new WaitForSeconds(time);
         if(!isDead)
         {
-            Debug.LogError("is not dead.");
             isMovementDisabled = false;
         }
     }
