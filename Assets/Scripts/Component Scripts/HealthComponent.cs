@@ -20,8 +20,6 @@ public class HealthComponent : MonoBehaviour , IDamageable
         currentHealth = maxHealth;
     }
 
-    //Negative value = healing
-    //Positive value = damaging
     public void TakeDamage(float value, Vector2 knockbackDirection, float knockbackPower)
     {
         if(gameObject.layer.ToString() != "Invincibility")
@@ -78,6 +76,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
             if(gameObject.TryGetComponent(out EnemyMovement enemy))
             {
                 enemy.DisableMovement();
+                enemy.SetIsDead(true);
             }
             
             GameManager.Instance.EnemyDied(gameObject, enemyScore);

@@ -187,6 +187,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void DisableMovement()
+    {
+        isMovementDisabled = true;
+        gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePosition;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+    }
+
     private void DisableMovementFor(float time)
     {
         StartCoroutine(DisableMovementCoroutine(time));
@@ -199,8 +206,15 @@ public class PlayerMovement : MonoBehaviour
         isMovementDisabled = false;
     }
 
-    //Returns the last move direction if the player is not moving or the current move direction.
-    //It is used at attacking to get the direction of attack.
+    /// <summary>
+    /// Returns the last move direction if the player is not moving or the current move direction.
+    /// It is used at attacking to get the direction of attack.
+    /// </summary>
+    /// <returns>
+    /// A Vector 2 representing either:
+    /// - The current move input direction if moving.
+    /// - The last look-at direction if idle.
+    /// </returns>
     public Vector2 GetMoveDirection()
     {
         if (moveInput == Vector2.zero)

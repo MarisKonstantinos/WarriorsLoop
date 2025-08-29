@@ -6,7 +6,7 @@ public class EnemyMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private bool isMovementDisabled = false;
-    private bool isDead;
+    private bool isDead = false;
     [SerializeField] private float movementSpeed;
     
     [SerializeField] private LayerMask lineOfSightLayer;
@@ -82,6 +82,15 @@ public class EnemyMovement : MonoBehaviour
     {
         isMovementDisabled = true;
         yield return new WaitForSeconds(time);
-        isMovementDisabled = false;
+        if(!isDead)
+        {
+            Debug.LogError("is not dead.");
+            isMovementDisabled = false;
+        }
+    }
+
+    public void SetIsDead(bool _isDead)
+    {
+        isDead = _isDead;
     }
 }
