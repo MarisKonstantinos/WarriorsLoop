@@ -194,7 +194,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TurtleShellEnemyAnimator
+  m_Name: ChestEnemyAnimator
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: isMoving
@@ -303,7 +303,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1f583387dcc14604b6836cea4b8d68d0, type: 3}
+  m_Motion: {fileID: 7400000, guid: a28ecc966e5f4b4a9b3f1cd429280ff0, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -329,7 +329,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 53853ada9939fe14d800df8e80e5d521, type: 2}
+  m_Motion: {fileID: 7400000, guid: 83d670bb165032f4f80e48f71778422c, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -379,7 +379,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ee7bb9ee4f2544619d907133f41c9fc1, type: 3}
+  m_Motion: {fileID: 7400000, guid: 01773f3817f44e90aa2efb15541af37a, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -407,7 +407,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 70329e6db728412fb2a6e0371aaaa001, type: 3}
+  m_Motion: {fileID: 7400000, guid: ff26e30db21e482dae66b0ebfa98c567, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -433,7 +433,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: e80217b862954c6fb42b39ddd149cf64, type: 3}
+  m_Motion: {fileID: 7400000, guid: dd0e69b4e97448009cf1883ac275ba47, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
