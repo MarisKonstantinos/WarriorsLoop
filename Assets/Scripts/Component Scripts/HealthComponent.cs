@@ -7,17 +7,20 @@ using UnityEngine.InputSystem;
 public class HealthComponent : MonoBehaviour , IDamageable
 {
     [SerializeField] private float maxHealth;
+    [SerializeField] private HealthBar healthBar;
     private float currentHealth;
-    [Min(0),SerializeField]
-    private int enemyScore = 0;
+    [Tooltip("Set this to 0 for non enemy characters.") , Min(0), SerializeField] private int enemyScore = 0;
     private bool isDead = false;
+    private AnimatorController animController;
+
     public event Action<float> OnKnockback;
     public event Action<GameObject> OnEnemyDeath;
     //public bool isInvincible { get; set; } = false;
-
     private void Awake()
     {
         currentHealth = maxHealth;
+        if (healthBar)
+            healthBar.SetMaxHealth(maxHealth);
     }
 
     public void TakeDamage(float value, Vector2 knockbackDirection, float knockbackPower)
@@ -25,7 +28,11 @@ public class HealthComponent : MonoBehaviour , IDamageable
         if(gameObject.layer.ToString() != "Invincibility")
         {
             currentHealth -= value;
-            
+            if(healthBar)
+            {
+                healthBar.SetHealth(currentHealth);
+            }
+
             Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
@@ -33,16 +40,11 @@ public class HealthComponent : MonoBehaviour , IDamageable
                 OnKnockback?.Invoke(0.2f);
                 rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
             }
-            Debug.LogError("Current health of " + this.name + ": " + currentHealth);
 
-            //if is player
-            if(gameObject.layer == 6)
+            gameObject.TryGetComponent(out animController);
+            if (animController)
             {
-                gameObject.GetComponent<AnimatorController>().PlayHit();
-            }
-            else
-            {
-                gameObject.GetComponent<AnimatorController>().PlayHit();
+                animController.PlayHit();
             }
         }
 
