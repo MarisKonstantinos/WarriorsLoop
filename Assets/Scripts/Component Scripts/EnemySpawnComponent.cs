@@ -57,7 +57,7 @@ public class EnemySpawnComponent : MonoBehaviour
                 enemiesSpawned = 0;
                 spawnEnemyTimer = currentEnemyWave.restDelay;
 
-                if (currentEnemyWaveIndex <= runes.Length)
+                if (currentEnemyWaveIndex <= runes.Length - 1)
                 {
                     runes[currentEnemyWaveIndex].EnableSpriteFlashing();
                 }

@@ -146,7 +146,7 @@
                     "name": "",
                     "id": "08266073-2303-4471-9893-939c39458a13",
                     "path": "<Keyboard>/space",
-                    "interactions": "MultiTap",
+                    "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Dash",

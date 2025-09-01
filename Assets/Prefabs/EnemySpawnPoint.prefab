@@ -202,6 +202,9 @@ MonoBehaviour:
   enemyWaves:
   - {fileID: 11400000, guid: 47bf1523568470743a692209c42ad799, type: 2}
   - {fileID: 11400000, guid: e003f9b70107da0449ed510d5a209e79, type: 2}
+  - {fileID: 11400000, guid: 2937257feeedee24ca937500ee9951ba, type: 2}
+  - {fileID: 11400000, guid: bd1b68d38a88d5a4f8f6d751cc01632e, type: 2}
+  - {fileID: 11400000, guid: ec7667e8c3a2cd849b65183806e39684, type: 2}
   spawnRadius: 1
   obstacleLayer:
     serializedVersion: 2
