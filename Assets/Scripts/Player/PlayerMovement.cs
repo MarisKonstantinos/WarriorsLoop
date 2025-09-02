@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -24,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashPower;
     [SerializeField] private float dashDuration = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
+    [SerializeField] private UnityEngine.UI.Image dashCooldownImage;
+    [SerializeField] private TextMeshProUGUI dashCooldownText;
+
     private float dashTimer = 0f;
     //Is used to check if the player can dash - cooldown ------------- DO NOT USE: or dead
     private bool canDash = true;
@@ -65,13 +69,20 @@ public class PlayerMovement : MonoBehaviour
         //UI Shows smoother in simple Update
         if (!canDash && dashTimer > 0)
         {
+            
             dashTimer -= Time.deltaTime;
-
+            
             //Update dash feedback icon/text
             if (dashTimer <= 0f)
             {
                 canDash = true;
-                Debug.LogError("DASH READY!");
+                dashTimer = 0f;
+            }
+
+            if (dashCooldownText && dashCooldownImage)
+            {
+                dashCooldownText.text = dashTimer.ToString("#.#");
+                dashCooldownImage.fillAmount = dashTimer / dashCooldown;
             }
         }
 
@@ -96,7 +107,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    //Fixed update is good for physics.
     private void FixedUpdate()
     {
         if (isDashing || isMovementDisabled) return;
@@ -169,8 +179,13 @@ public class PlayerMovement : MonoBehaviour
         ToggleInvincibility(true);
         rb.velocity = moveInput * dashPower;
         dashTimer = dashCooldown;
+        if (dashCooldownText && dashCooldownImage)
+        {
+            dashCooldownImage.fillAmount = 1;
+            dashCooldownText.text = dashTimer.ToString();
+        }
         yield return new WaitForSeconds(dashDuration);
-
+        
         ToggleInvincibility(false);
         isDashing = false;
     }

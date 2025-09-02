@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerCombat : MonoBehaviour, IAttack
@@ -16,6 +18,10 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private PlayerMovement playerMovement;
     private float meleeCooldownTimer = 0;
     private AnimatorController playerAnimator;
+
+    [SerializeField] private float dashAttackCooldownTimer;
+    [SerializeField] private Image dashAttackCooldownImage;
+    [SerializeField] private TextMeshProUGUI dashAttackCooldownText;
 
     private void Awake()
     {
@@ -35,11 +41,10 @@ public class PlayerCombat : MonoBehaviour, IAttack
         {
             if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0) return;
 
-            Debug.LogError("ATTACK!");
             if (meleeAttackOffset == 0) meleeAttackOffset = 1;
-            attackPoint = (Vector2)gameObject.transform.localPosition + playerMovement.GetMoveDirection()  / meleeAttackOffset;
+            Vector2 meleeAttackPoint = (Vector2)gameObject.transform.localPosition + playerMovement.GetMoveDirection()  / meleeAttackOffset;
 
-            Execute(attackPoint, meleeAttack);
+            Execute(meleeAttackPoint, meleeAttack);
 
             if (!playerAnimator) return;
 
@@ -47,11 +52,31 @@ public class PlayerCombat : MonoBehaviour, IAttack
         }
     }
 
+    public void OnDashAttack(CallbackContext context)
+    {
+        if(context.performed)
+        {
+            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0) return;
+            //Change it to dashAttackPoint. attackPoint is global var for DrawGizmos.
+            attackPoint = gameObject.transform.localPosition;
+            Execute(attackPoint, dashAttack);
+        }
+    }
+
     public void Execute(Vector2 attackPoint, AttackData attack)
     {
         Collider2D[] hit = Physics2D.OverlapCircleAll(attackPoint, attack.range,enemyLayer);
-        meleeCooldownTimer = meleeAttack.cooldown;
-        foreach(var enemy in hit)
+        //It should be different for each attack.
+        if(attack.name == "Melee Attack")
+        {
+            meleeCooldownTimer = meleeAttack.cooldown;
+        }
+        else if(attack.name == "Dash Attack")
+        {
+            dashAttackCooldownTimer = dashAttack.cooldown;
+        }
+
+        foreach (var enemy in hit)
         {
             if (enemy.TryGetComponent(out HealthComponent enemyHealth))
             {
