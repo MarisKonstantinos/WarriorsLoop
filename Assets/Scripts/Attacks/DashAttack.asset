@@ -15,5 +15,5 @@ MonoBehaviour:
   attackName: Dash Attack
   damage: 20
   cooldown: 4
-  range: 0.72
+  range: 1
   knockbackPower: 10

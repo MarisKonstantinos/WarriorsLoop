@@ -8,6 +8,7 @@ using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerCombat : MonoBehaviour, IAttack
 {
+    private Rigidbody2D rb;
     [SerializeField] private AttackData meleeAttack;
     [SerializeField] private AttackData dashAttack;
     [SerializeField] private AttackData aoeAttack;
@@ -16,30 +17,72 @@ public class PlayerCombat : MonoBehaviour, IAttack
 
     private Vector2 attackPoint;
     private PlayerMovement playerMovement;
-    private float meleeCooldownTimer = 0;
     private AnimatorController playerAnimator;
+    private HashSet<HealthComponent> hitEnemies = new HashSet<HealthComponent>();
+    private bool isUsingAbility = false; // To keep one ability active at a time.
+    //Melee Attack Variables
+    private float meleeCooldownTimer = 0;
 
-    [SerializeField] private float dashAttackCooldownTimer;
+    //Dash Attack Variables
     [SerializeField] private Image dashAttackCooldownImage;
     [SerializeField] private TextMeshProUGUI dashAttackCooldownText;
+    private float dashAttackCooldownTimer;
+    public float dashAttackPower = 15;
+    public float dashAttackDuration = 0.2f;
+    private float dashAttackDurationTimer = 0;
+    private bool moveOverlapCircle = false;
 
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerAnimator = GetComponent<AnimatorController>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
         if (meleeCooldownTimer > 0)
             meleeCooldownTimer -= Time.deltaTime;
+
+        //Dash attack cooldown
+        if (dashAttackCooldownTimer > 0)
+        {
+            dashAttackCooldownTimer -= Time.deltaTime;
+            if (dashAttackCooldownText && dashAttackCooldownImage)
+            {
+                dashAttackCooldownText.text = dashAttackCooldownTimer.ToString("#.#");
+                dashAttackCooldownImage.fillAmount = dashAttackCooldownTimer / dashAttack.cooldown;
+            }
+        }
+
+        //Dash duration
+        if(dashAttackDurationTimer > 0)
+        {
+            dashAttackDurationTimer -= Time.deltaTime;
+            moveOverlapCircle = true;
+            
+        }
+        else
+        {
+            hitEnemies.Clear();
+            moveOverlapCircle = false;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (moveOverlapCircle)
+        {
+            attackPoint = gameObject.transform.localPosition;
+            Execute(attackPoint, dashAttack);
+        }
     }
 
     public void OnMeleeAttack(CallbackContext context)
     {
         if(context.performed)
         {
-            if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0) return;
+            if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0) return;
 
             if (meleeAttackOffset == 0) meleeAttackOffset = 1;
             Vector2 meleeAttackPoint = (Vector2)gameObject.transform.localPosition + playerMovement.GetMoveDirection()  / meleeAttackOffset;
@@ -56,10 +99,27 @@ public class PlayerCombat : MonoBehaviour, IAttack
     {
         if(context.performed)
         {
-            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0) return;
+            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0 || meleeCooldownTimer > 0) return;
+
+            //Dash
+            dashAttackDurationTimer = dashAttackDuration;
+            playerMovement.DisableMovementFor(dashAttackDuration);
+            rb.velocity = playerMovement.GetMoveDirection() * playerMovement.dashPower;
+
             //Change it to dashAttackPoint. attackPoint is global var for DrawGizmos.
+            StartCoroutine(playerMovement.ToggleInvincibilityFor(dashAttackDuration));
             attackPoint = gameObject.transform.localPosition;
+            hitEnemies.Clear();
             Execute(attackPoint, dashAttack);
+
+            if (dashAttackCooldownText && dashAttackCooldownImage)
+            {
+                dashAttackCooldownImage.fillAmount = 1;
+                dashAttackCooldownText.text = dashAttackCooldownTimer.ToString();
+            }
+
+            if (playerAnimator)
+                playerAnimator.PlayDashAttack();
         }
     }
 
@@ -67,18 +127,18 @@ public class PlayerCombat : MonoBehaviour, IAttack
     {
         Collider2D[] hit = Physics2D.OverlapCircleAll(attackPoint, attack.range,enemyLayer);
         //It should be different for each attack.
-        if(attack.name == "Melee Attack")
+        if(attack.name == "MeleeAttack")
         {
             meleeCooldownTimer = meleeAttack.cooldown;
         }
-        else if(attack.name == "Dash Attack")
+        else if(attack.name == "DashAttack")
         {
             dashAttackCooldownTimer = dashAttack.cooldown;
         }
 
         foreach (var enemy in hit)
         {
-            if (enemy.TryGetComponent(out HealthComponent enemyHealth))
+            if (enemy.TryGetComponent(out HealthComponent enemyHealth) && !hitEnemies.Contains(enemyHealth))
             {
                 Vector2 hitPoint = enemy.transform.position;
                 Vector2 sourcePoint = attackPoint;
@@ -86,6 +146,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
                 Vector2 knockbackDirection = (hitPoint - sourcePoint).normalized;
 
                 enemyHealth.TakeDamage(attack.damage, knockbackDirection, attack.knockbackPower);
+                hitEnemies.Add(enemyHealth);
             }
         }
     }
@@ -95,6 +156,6 @@ public class PlayerCombat : MonoBehaviour, IAttack
         //RED for melee attack
         if (meleeAttack == null || attackPoint == null) return;
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint, meleeAttack.range);
+        Gizmos.DrawWireSphere(attackPoint, dashAttack.range);
     }
 }

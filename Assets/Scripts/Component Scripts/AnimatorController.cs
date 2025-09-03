@@ -60,4 +60,9 @@ public class AnimatorController : MonoBehaviour
         }
         animator.SetInteger("attack", currentAttackAnim);
     }
+
+    public void PlayDashAttack()
+    {
+        animator.SetTrigger("isDashAttacking");
+    }
 }

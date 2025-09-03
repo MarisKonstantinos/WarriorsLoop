@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lastLookAtDirection;
 
     [Header("Dash")]
-    [SerializeField] private float dashPower;
+    public float dashPower;
     [SerializeField] private float dashDuration = 0.2f;
     [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private UnityEngine.UI.Image dashCooldownImage;
@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private float dashTimer = 0f;
     //Is used to check if the player can dash - cooldown ------------- DO NOT USE: or dead
     private bool canDash = true;
+
     //Is used to check the state of the player so he can't be dashing twice.
     private bool isDashing = false;
 
@@ -176,7 +177,6 @@ public class PlayerMovement : MonoBehaviour
     {
         isDashing = true;
         canDash = false;
-        ToggleInvincibility(true);
         rb.velocity = moveInput * dashPower;
         dashTimer = dashCooldown;
         if (dashCooldownText && dashCooldownImage)
@@ -184,10 +184,17 @@ public class PlayerMovement : MonoBehaviour
             dashCooldownImage.fillAmount = 1;
             dashCooldownText.text = dashTimer.ToString();
         }
+        StartCoroutine(ToggleInvincibilityFor(dashDuration));
         yield return new WaitForSeconds(dashDuration);
-        
-        ToggleInvincibility(false);
+       
         isDashing = false;
+    }
+
+    public IEnumerator ToggleInvincibilityFor(float duration)
+    {
+        ToggleInvincibility(true);
+        yield return new WaitForSeconds(duration);
+        ToggleInvincibility(false);
     }
 
     private void ToggleInvincibility(bool _isInvincible)
@@ -209,7 +216,7 @@ public class PlayerMovement : MonoBehaviour
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
     }
 
-    private void DisableMovementFor(float time)
+    public void DisableMovementFor(float time)
     {
         StartCoroutine(DisableMovementCoroutine(time));
     }
