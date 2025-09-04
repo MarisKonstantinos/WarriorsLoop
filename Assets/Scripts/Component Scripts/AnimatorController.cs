@@ -65,4 +65,9 @@ public class AnimatorController : MonoBehaviour
     {
         animator.SetTrigger("isDashAttacking");
     }
+
+    public void PlaySpinAttack()
+    {
+        animator.SetTrigger("isSpinAttacking");
+    }
 }

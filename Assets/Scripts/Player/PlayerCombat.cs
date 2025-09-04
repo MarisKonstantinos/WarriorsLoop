@@ -11,7 +11,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private Rigidbody2D rb;
     [SerializeField] private AttackData meleeAttack;
     [SerializeField] private AttackData dashAttack;
-    [SerializeField] private AttackData aoeAttack;
+    [SerializeField] private AttackData spinAttack;
     [SerializeField] private LayerMask enemyLayer;
     [Range(1, 10)] [SerializeField] private int meleeAttackOffset;
 
@@ -19,7 +19,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private PlayerMovement playerMovement;
     private AnimatorController playerAnimator;
     private HashSet<HealthComponent> hitEnemies = new HashSet<HealthComponent>();
-    private bool isUsingAbility = false; // To keep one ability active at a time.
+
     //Melee Attack Variables
     private float meleeCooldownTimer = 0;
 
@@ -27,10 +27,18 @@ public class PlayerCombat : MonoBehaviour, IAttack
     [SerializeField] private Image dashAttackCooldownImage;
     [SerializeField] private TextMeshProUGUI dashAttackCooldownText;
     private float dashAttackCooldownTimer;
-    public float dashAttackPower = 15;
-    public float dashAttackDuration = 0.2f;
     private float dashAttackDurationTimer = 0;
     private bool moveOverlapCircle = false;
+    private Vector2 dashAttackPoint;
+    public float dashAttackPower = 15;
+    public float dashAttackDuration = 0.2f;
+
+    //Spin Attack Variables
+    [SerializeField] private Image spinAttackCooldownImage;
+    [SerializeField] private TextMeshProUGUI spinAttackCooldownText;
+    private float spinAttackCooldownTimer;
+    private float spinAttackDurationTimer;
+    public float spinAttackDuration;
 
     private void Awake()
     {
@@ -67,22 +75,40 @@ public class PlayerCombat : MonoBehaviour, IAttack
             hitEnemies.Clear();
             moveOverlapCircle = false;
         }
+
+        //Spin attack cooldown
+        if(spinAttackCooldownTimer > 0)
+        {
+            spinAttackCooldownTimer -= Time.deltaTime;
+            if (spinAttackCooldownImage && spinAttackCooldownText)
+            {
+                spinAttackCooldownText.text = spinAttackCooldownTimer.ToString("#.#");
+                spinAttackCooldownImage.fillAmount = spinAttackCooldownTimer / spinAttack.cooldown; ;
+            }
+        }
+
+        //Spin duration
+        if (spinAttackDurationTimer > 0)
+        {
+            spinAttackDurationTimer -= Time.deltaTime;
+        }
     }
 
     private void FixedUpdate()
     {
         if (moveOverlapCircle)
         {
-            attackPoint = gameObject.transform.localPosition;
-            Execute(attackPoint, dashAttack);
+            dashAttackPoint = gameObject.transform.localPosition;
+            Execute(dashAttackPoint, dashAttack);
         }
     }
 
+    #region Attack Inputs
     public void OnMeleeAttack(CallbackContext context)
     {
         if(context.performed)
         {
-            if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0) return;
+            if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0 || spinAttackDurationTimer > 0) return;
 
             if (meleeAttackOffset == 0) meleeAttackOffset = 1;
             Vector2 meleeAttackPoint = (Vector2)gameObject.transform.localPosition + playerMovement.GetMoveDirection()  / meleeAttackOffset;
@@ -99,18 +125,19 @@ public class PlayerCombat : MonoBehaviour, IAttack
     {
         if(context.performed)
         {
-            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0 || meleeCooldownTimer > 0) return;
+            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0 || meleeCooldownTimer > 0 || spinAttackDurationTimer > 0) return;
+            
+            dashAttackDurationTimer = dashAttackDuration;
 
             //Dash
-            dashAttackDurationTimer = dashAttackDuration;
             playerMovement.DisableMovementFor(dashAttackDuration);
             rb.velocity = playerMovement.GetMoveDirection() * playerMovement.dashPower;
 
             //Change it to dashAttackPoint. attackPoint is global var for DrawGizmos.
-            StartCoroutine(playerMovement.ToggleInvincibilityFor(dashAttackDuration));
-            attackPoint = gameObject.transform.localPosition;
+            playerMovement.ToggleInvincibilityFor(dashAttackDuration);
+            dashAttackPoint = gameObject.transform.localPosition;
             hitEnemies.Clear();
-            Execute(attackPoint, dashAttack);
+            Execute(dashAttackPoint, dashAttack);
 
             if (dashAttackCooldownText && dashAttackCooldownImage)
             {
@@ -123,6 +150,34 @@ public class PlayerCombat : MonoBehaviour, IAttack
         }
     }
 
+    public void OnSpinAttack(CallbackContext context)
+    {
+        if(context.performed)
+        {
+            if (!spinAttack || !playerMovement || spinAttackCooldownTimer > 0 || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0) return;
+
+            spinAttackDurationTimer = spinAttackDuration;
+            
+            playerMovement.DisableMovementFor(spinAttackDuration);
+            playerMovement.ToggleInvincibilityFor(spinAttackDuration);
+
+            attackPoint = gameObject.transform.localPosition;
+            hitEnemies.Clear();
+            Execute(attackPoint, spinAttack);
+
+            if(spinAttackCooldownImage && spinAttackCooldownText)
+            {
+                spinAttackCooldownImage.fillAmount = 1;
+                spinAttackCooldownText.text = spinAttackCooldownTimer.ToString();
+            }
+
+            if (playerAnimator)
+                playerAnimator.PlaySpinAttack();
+        }
+    }
+
+    #endregion
+
     public void Execute(Vector2 attackPoint, AttackData attack)
     {
         Collider2D[] hit = Physics2D.OverlapCircleAll(attackPoint, attack.range,enemyLayer);
@@ -134,6 +189,10 @@ public class PlayerCombat : MonoBehaviour, IAttack
         else if(attack.name == "DashAttack")
         {
             dashAttackCooldownTimer = dashAttack.cooldown;
+        }
+        else if(attack.name == "SpinAttack")
+        {
+            spinAttackCooldownTimer = spinAttack.cooldown;
         }
 
         foreach (var enemy in hit)
@@ -156,6 +215,6 @@ public class PlayerCombat : MonoBehaviour, IAttack
         //RED for melee attack
         if (meleeAttack == null || attackPoint == null) return;
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint, dashAttack.range);
+        Gizmos.DrawWireSphere(dashAttackPoint, dashAttack.range);
     }
 }

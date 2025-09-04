@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
 {
     [SerializeField] private float maxHealth;
     [SerializeField] private HealthBar healthBar;
+    [SerializeField] private TextMeshProUGUI healthAmmountText;
     private float currentHealth;
     [Tooltip("Set this to 0 for non enemy characters.") , Min(0), SerializeField] private int enemyScore = 0;
     private bool isDead = false;
@@ -28,6 +30,8 @@ public class HealthComponent : MonoBehaviour , IDamageable
         if(gameObject.layer.ToString() != "Invincibility")
         {
             currentHealth -= value;
+            if(healthAmmountText)
+                healthAmmountText.text = currentHealth.ToString() + "/" + maxHealth.ToString();
             if(healthBar)
             {
                 healthBar.SetHealth(currentHealth);

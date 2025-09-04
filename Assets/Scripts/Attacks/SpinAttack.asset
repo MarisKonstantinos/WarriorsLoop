@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45551bbfda4057f4d906849a84ba98b7, type: 3}
-  m_Name: DashAttack
+  m_Name: SpinAttack
   m_EditorClassIdentifier: 
   attackName: Dash Attack
-  damage: 30
-  cooldown: 4
+  damage: 40
+  cooldown: 1
   range: 1.45
-  knockbackPower: 10
+  knockbackPower: 20

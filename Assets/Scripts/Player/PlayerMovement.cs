@@ -184,29 +184,22 @@ public class PlayerMovement : MonoBehaviour
             dashCooldownImage.fillAmount = 1;
             dashCooldownText.text = dashTimer.ToString();
         }
-        StartCoroutine(ToggleInvincibilityFor(dashDuration));
+        ToggleInvincibilityFor(dashDuration);
         yield return new WaitForSeconds(dashDuration);
        
         isDashing = false;
     }
 
-    public IEnumerator ToggleInvincibilityFor(float duration)
+    public void ToggleInvincibilityFor(float duration)
     {
-        ToggleInvincibility(true);
-        yield return new WaitForSeconds(duration);
-        ToggleInvincibility(false);
+        StartCoroutine(ToggleInvincibility(duration));
     }
 
-    private void ToggleInvincibility(bool _isInvincible)
+    public IEnumerator ToggleInvincibility(float duration)
     {
-        if(_isInvincible)
-        {
-            gameObject.layer = LayerMask.NameToLayer("Invincible");
-        }
-        else
-        {
-            gameObject.layer = LayerMask.NameToLayer("Player");
-        }
+        gameObject.layer = LayerMask.NameToLayer("Invincible");
+        yield return new WaitForSeconds(duration);
+        gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
     public void DisableMovement()
@@ -224,6 +217,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator DisableMovementCoroutine(float time)
     {
         isMovementDisabled = true;
+        rb.velocity = Vector2.zero;
         yield return new WaitForSeconds(time);
         isMovementDisabled = false;
     }
