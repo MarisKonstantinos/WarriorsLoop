@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,7 +10,8 @@ public class UIManager : MonoBehaviour
 
     public GameObject gameOverUI;
     [SerializeField] private TextMeshProUGUI playerScoreTMP;
-
+    [SerializeField] private TextMeshProUGUI textMeshProUGUI;
+    [SerializeField] private GameObject abilityDescriptionPanel;
     private void Awake()
     {
         if(Instance != null &&  Instance != this)
@@ -32,6 +34,24 @@ public class UIManager : MonoBehaviour
     {
         if (!playerScoreTMP) return;
 
-        playerScoreTMP.text = "Score:" + score;
+        playerScoreTMP.text = score.ToString();
+    }
+
+    public void OnTab(InputAction.CallbackContext context)
+    {
+        if (!abilityDescriptionPanel) return;
+        
+        if (context.performed)
+        {
+            GameManager.Instance.ToggleGamePause(true);
+            GameManager.Instance.TogglePlayerMovement(false);
+            abilityDescriptionPanel.SetActive(true);
+        }
+        else
+        {
+            GameManager.Instance.ToggleGamePause(false);
+            GameManager.Instance.TogglePlayerMovement(true);
+            abilityDescriptionPanel.SetActive(false);
+        }
     }
 }

@@ -65,10 +65,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
         //Player layer
         if(gameObject.layer == 6)
         {
-            if(gameObject.TryGetComponent(out PlayerInput input))
-            {
-                input.DeactivateInput();
-            }
+            GameManager.Instance.TogglePlayerInput(false);
             GameManager.Instance.PlayerDied();
 
             gameObject.GetComponent<CircleCollider2D>().enabled = false;

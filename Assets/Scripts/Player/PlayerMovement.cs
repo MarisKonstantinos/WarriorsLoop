@@ -209,6 +209,13 @@ public class PlayerMovement : MonoBehaviour
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
     }
 
+    public void EnableMovement()
+    {
+        isMovementDisabled = false;
+        gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+        gameObject.GetComponent<CircleCollider2D>().enabled = true;
+    }
+
     public void DisableMovementFor(float time)
     {
         StartCoroutine(DisableMovementCoroutine(time));
