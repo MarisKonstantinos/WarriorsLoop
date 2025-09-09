@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        
+        UIManager.Instance.ScoreUpdate(playerScore);
     }
 
     public GameObject GetPlayer()
@@ -72,15 +72,9 @@ public class GameManager : MonoBehaviour
         if (player.TryGetComponent(out PlayerInput input))
         {
             if (!_input)
-            {
-                Debug.LogError("Deactivating input.");
                 input.DeactivateInput();
-            }
             else
-            {
-                Debug.LogError("Activating input.");
                 input.ActivateInput();
-            }
         }
     }
 
@@ -100,6 +94,8 @@ public class GameManager : MonoBehaviour
     public void EnemyDied(GameObject enemy, int score)
     {
         playerScore += score;
+        if (playerScore > 999)
+            playerScore = 999;
         UIManager.Instance.ScoreUpdate(playerScore);
         StartCoroutine(DelayDestroyEnemy(enemy));
 
@@ -121,6 +117,15 @@ public class GameManager : MonoBehaviour
         else
         {
             Time.timeScale = 1f;
+        }
+    }
+
+
+    public void HealPlayer(float value)
+    {
+        if(player.TryGetComponent(out HealthComponent playerHealth))
+        {
+            playerHealth.HealDamage(value);
         }
     }
 }

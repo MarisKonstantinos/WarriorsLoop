@@ -691,7 +691,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  enemyScore: 10
+  healthBar: {fileID: 0}
+  healthAmmountText: {fileID: 0}
+  enemyScore: 6
 --- !u!114 &4201588408042612005
 MonoBehaviour:
   m_ObjectHideFlags: 0

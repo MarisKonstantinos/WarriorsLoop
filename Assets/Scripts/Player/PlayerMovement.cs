@@ -167,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
     public void OnTest(InputAction.CallbackContext context)
     {
         if(context.performed)
-            gameObject.GetComponent<HealthComponent>().TakeDamage(20, Vector2.zero, 0);
+            gameObject.GetComponent<HealthComponent>().TakeDamage(20,Vector2.zero,0,false);
     }
 
     #endregion

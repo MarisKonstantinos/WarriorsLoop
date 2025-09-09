@@ -7,7 +7,7 @@ public class EnemySpawnComponent : MonoBehaviour
 {
     [SerializeField] private List<EnemyWave> enemyWaves = new List<EnemyWave>();
     private EnemyWave currentEnemyWave;
-    private int currentEnemyWaveIndex;
+    private int currentEnemyWaveIndex = -1;
     private int aliveEnemies = 0;
     private int enemiesSpawned = 0;
     private float spawnEnemyTimer = 0;
@@ -21,23 +21,17 @@ public class EnemySpawnComponent : MonoBehaviour
     //Rune Activation
     [SerializeField] SpriteFlashing[] runes;
 
+    private bool isPlayerInRange = false;
+    private int completedRounds = 0; //1 Round equals beating all the waves.
     private void Start()
     {
-        //Animation
         if (enemyWaves.Count == 0) return;
-
-        currentEnemyWave = enemyWaves[0];
-        currentEnemyWaveIndex = 0;
-
-        if(currentEnemyWaveIndex < runes.Length - 1)
-        {
-            runes[currentEnemyWaveIndex].EnableSpriteFlashing();
-        }
+        SetNextWave();
     }
 
     private void Update()
     {
-        if (!currentEnemyWave || !currentEnemyWave.enemyPrefab || enemyWaves.Count == 0) return;
+        if (!currentEnemyWave || !currentEnemyWave.enemyPrefab || enemyWaves.Count == 0 || !isPlayerInRange) return;
         
         if(enemiesSpawned < currentEnemyWave.enemyCount)
         {
@@ -49,19 +43,31 @@ public class EnemySpawnComponent : MonoBehaviour
         {
             if (aliveEnemies > 0) return;
 
-            currentEnemyWave = null;
-            if (currentEnemyWaveIndex < enemyWaves.Count - 1)
-            {
-                currentEnemyWaveIndex++;
-                currentEnemyWave = enemyWaves[currentEnemyWaveIndex];
-                enemiesSpawned = 0;
-                spawnEnemyTimer = currentEnemyWave.restDelay;
+            SetNextWave();
+        }
+    }
 
-                if (currentEnemyWaveIndex <= runes.Length - 1)
-                {
-                    runes[currentEnemyWaveIndex].EnableSpriteFlashing();
-                }
+    private void SetNextWave()
+    {
+        currentEnemyWave = null;
+        if (currentEnemyWaveIndex < enemyWaves.Count - 1)
+        {
+            currentEnemyWaveIndex++;
+            currentEnemyWave = enemyWaves[currentEnemyWaveIndex];
+            enemiesSpawned = 0;
+            spawnEnemyTimer = currentEnemyWave.restDelay;
+
+            if (currentEnemyWaveIndex <= runes.Length - 1)
+            {
+                runes[currentEnemyWaveIndex].EnableSpriteFlashing();
             }
+        }
+        else
+        {
+            currentEnemyWaveIndex = -1;
+            completedRounds++;
+            GameManager.Instance.HealPlayer(100);
+            SetNextWave();
         }
     }
 
@@ -84,7 +90,8 @@ public class EnemySpawnComponent : MonoBehaviour
         aliveEnemies++;
         if(enemy.TryGetComponent(out HealthComponent enemyHealth))
         {
-            enemyHealth.OnEnemyDeath += EnemyKilled;
+            enemyHealth.OnEnemyDeath += EnemyKilled; 
+            enemyHealth.SetMaxHealth(completedRounds * 10);
         }
         spawnEnemyTimer = currentEnemyWave.spawnDelay;
     }
@@ -126,5 +133,20 @@ public class EnemySpawnComponent : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, spawnRadius);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Player"))
+        {
+            isPlayerInRange = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            isPlayerInRange = false;
+        }
     }
 }

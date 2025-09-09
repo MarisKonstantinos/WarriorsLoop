@@ -22,6 +22,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
 
     //Melee Attack Variables
     private float meleeCooldownTimer = 0;
+    private bool hitPause = false; //Pause the game for a brief second to give weight to the player attack. 
 
     //Dash Attack Variables
     [SerializeField] private Image dashAttackCooldownImage;
@@ -185,6 +186,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
         if(attack.name == "MeleeAttack")
         {
             meleeCooldownTimer = meleeAttack.cooldown;
+            hitPause = true;
         }
         else if(attack.name == "DashAttack")
         {
@@ -203,8 +205,9 @@ public class PlayerCombat : MonoBehaviour, IAttack
                 Vector2 sourcePoint = attackPoint;
 
                 Vector2 knockbackDirection = (hitPoint - sourcePoint).normalized;
-
-                enemyHealth.TakeDamage(attack.damage, knockbackDirection, attack.knockbackPower);
+                
+                enemyHealth.TakeDamage(attack.damage, knockbackDirection, attack.knockbackPower,hitPause);
+                hitPause = false;
                 hitEnemies.Add(enemyHealth);
             }
         }

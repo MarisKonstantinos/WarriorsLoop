@@ -17,30 +17,41 @@ public class HealthComponent : MonoBehaviour , IDamageable
 
     public event Action<float> OnKnockback;
     public event Action<GameObject> OnEnemyDeath;
-    //public bool isInvincible { get; set; } = false;
+    
     private void Awake()
     {
+        SetMaxHealth(0f);
         currentHealth = maxHealth;
-        if (healthBar)
-            healthBar.SetMaxHealth(maxHealth);
+        UpdateHealthBar();
     }
 
-    public void TakeDamage(float value, Vector2 knockbackDirection, float knockbackPower)
+    public void SetMaxHealth(float buffedPercentage)
+    {
+        buffedPercentage = buffedPercentage / 100;
+        maxHealth = maxHealth + maxHealth* buffedPercentage;
+    }
+
+    public void HealDamage(float value)
+    {
+        currentHealth += value;
+        if(currentHealth > maxHealth)
+            currentHealth = maxHealth;
+        UpdateHealthBar();
+    }
+
+    public void TakeDamage(float value, Vector2 knockbackDirection, float knockbackPower,bool hitPause)
     {
         if(gameObject.layer.ToString() != "Invincibility")
         {
             currentHealth -= value;
-            if(healthAmmountText)
-                healthAmmountText.text = currentHealth.ToString() + "/" + maxHealth.ToString();
-            if(healthBar)
-            {
-                healthBar.SetHealth(currentHealth);
-            }
+
+            UpdateHealthBar();
 
             Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                CombatEffectsManager.Instance.HitPause(0.08f);
+                if(hitPause)
+                    CombatEffectsManager.Instance.HitPause(0.08f);
                 OnKnockback?.Invoke(0.2f);
                 rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
             }
@@ -75,14 +86,33 @@ public class HealthComponent : MonoBehaviour , IDamageable
         //Enemy layer
         if(gameObject.layer == 7)
         {
-            OnEnemyDeath?.Invoke(gameObject);
-            if(gameObject.TryGetComponent(out EnemyMovement enemy))
+            if(gameObject.CompareTag("Enemy"))
             {
-                enemy.DisableMovement();
-                enemy.SetIsDead(true);
+                OnEnemyDeath?.Invoke(gameObject);
+                if(gameObject.TryGetComponent(out EnemyMovement enemy))
+                {
+                    enemy.DisableMovement();
+                    enemy.SetIsDead(true);
+                }
+            
+                GameManager.Instance.EnemyDied(gameObject, enemyScore);
             }
             
-            GameManager.Instance.EnemyDied(gameObject, enemyScore);
+            if(gameObject.CompareTag("Healing item"))
+            {
+                //Play particles
+                //Play sound
+                GameManager.Instance.HealPlayer(10);
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBar)
+        {
+            healthBar.SetHealth(currentHealth, maxHealth);
         }
     }
 }

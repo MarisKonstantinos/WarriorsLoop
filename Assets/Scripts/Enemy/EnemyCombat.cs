@@ -42,7 +42,7 @@ public class EnemyCombat : MonoBehaviour, IAttack
         Vector2 knockbackDirection = (hitPoint - sourcePoint).normalized;
         if(damagedObject.TryGetComponent(out IDamageable damageable))
         {
-            damageable.TakeDamage(attack.damage, knockbackDirection, attack.knockbackPower);
+            damageable.TakeDamage(attack.damage, knockbackDirection, attack.knockbackPower,true);
         }
     }
 

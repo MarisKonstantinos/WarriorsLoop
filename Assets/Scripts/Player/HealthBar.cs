@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,9 +9,11 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Slider healthbarSlider;
     [SerializeField] private Image healthbarFill;
     [SerializeField] private Gradient healthGradient;
-    public void SetMaxHealth(float health)
+    [SerializeField] private TextMeshProUGUI healthText;
+
+    /*public void SetMaxHealth(float health)
     {
-        if(healthbarSlider)
+        if (healthbarSlider)
         {
             healthbarSlider.maxValue = health;
             healthbarSlider.value = health;
@@ -18,18 +21,26 @@ public class HealthBar : MonoBehaviour
 
         if (healthGradient != null && healthbarFill != null)
         {
-            healthbarFill.color = healthGradient.Evaluate(1);    
+            healthbarFill.color = healthGradient.Evaluate(1);
         }
-    }
+    }*/
 
-    public void SetHealth(float health)
+    public void SetHealth(float currentHealth,float maxHealth)
     {
         if(healthbarSlider)
-            healthbarSlider.value = health;
+        {
+            healthbarSlider.maxValue = maxHealth;
+            healthbarSlider.value = currentHealth;
+        }
 
         if (healthGradient != null && healthbarFill != null)
         {
             healthbarFill.color = healthGradient.Evaluate(healthbarSlider.normalizedValue);
         }
+
+        if (healthText)
+            healthText.text = currentHealth.ToString() + "/" + maxHealth.ToString();
+        else
+            Debug.LogError("No text.");
     }
 }

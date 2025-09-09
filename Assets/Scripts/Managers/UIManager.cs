@@ -10,7 +10,6 @@ public class UIManager : MonoBehaviour
 
     public GameObject gameOverUI;
     [SerializeField] private TextMeshProUGUI playerScoreTMP;
-    [SerializeField] private TextMeshProUGUI textMeshProUGUI;
     [SerializeField] private GameObject abilityDescriptionPanel;
     private void Awake()
     {

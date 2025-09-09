@@ -1133,14 +1133,6 @@ MonoBehaviour:
     m_ActionId: 765f568c-e694-4414-bff2-f035607019aa
     m_ActionName: UI/RightClick[/Mouse/rightButton]
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 5d73f93a-9555-4411-bd5c-49d12b99d89e
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a3c9272b-0619-4ddb-a2a3-95845d5d85e6
-    m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3208680780310681873}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
@@ -1204,6 +1196,54 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 1290eea3-2295-42df-bed3-9555c61ce84b
     m_ActionName: Player/DashAttack[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3208680780310681884}
+        m_TargetAssemblyTypeName: PlayerCombat, Assembly-CSharp
+        m_MethodName: OnSpinAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f3f18786-94ac-4ebd-9f8b-99c2a1a9a8ea
+    m_ActionName: Player/SpinAttack[/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OnTab
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f4d3adf2-70db-4060-a680-606d731420e8
+    m_ActionName: UI/Tab menu[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OnTab
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 3d4ab1da-82b7-4314-89ed-8fae636dca76
+    m_ActionName: Player/Tab menu[/Keyboard/tab]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1259,6 +1299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   healthBar: {fileID: 0}
+  healthAmmountText: {fileID: 0}
   enemyScore: 0
 --- !u!114 &3208680780310681884
 MonoBehaviour:
@@ -1274,15 +1315,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meleeAttack: {fileID: 11400000, guid: 2049a32aa6d9b1b4ba4806ffe8262a19, type: 2}
   dashAttack: {fileID: 11400000, guid: c422e25a5b5181c468cd1f40f46ef427, type: 2}
-  aoeAttack: {fileID: 0}
+  spinAttack: {fileID: 11400000, guid: 7763c113a6b7628478577cefd55e98ae, type: 2}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
   meleeAttackOffset: 1
-  dashAttackCooldownTimer: 0
   dashAttackCooldownImage: {fileID: 0}
   dashAttackCooldownText: {fileID: 0}
-  dashPower: 15
+  dashAttackPower: 15
+  dashAttackDuration: 0.4
+  spinAttackCooldownImage: {fileID: 0}
+  spinAttackCooldownText: {fileID: 0}
+  spinAttackDuration: 0.2
 --- !u!95 &1675773211
 Animator:
   serializedVersion: 5
@@ -1295,7 +1339,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: 0308cf4e83cf517488b60af58b290fe0, type: 3}
   m_Controller: {fileID: 9100000, guid: 976641b879e287c4288434cf689ea0ff, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 2
+  m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2589,7 +2633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5806250561606970179
 Transform:
   m_ObjectHideFlags: 0
