@@ -100,8 +100,9 @@ public class HealthComponent : MonoBehaviour , IDamageable
             
             if(gameObject.CompareTag("Healing item"))
             {
-                //Play particles
                 //Play sound
+                //Play particles
+                ParticleManager.Instance.PlayBoxDestroyParticles(gameObject.transform.position);
                 GameManager.Instance.HealPlayer(10);
                 Destroy(gameObject);
             }
