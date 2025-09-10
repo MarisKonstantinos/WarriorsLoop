@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float movementSpeed;
     private Vector2 moveInput;
     private Vector2 lastLookAtDirection;
+    [SerializeField] private ParticleSystem moveParticles;
 
     [Header("Dash")]
     public float dashPower;
@@ -124,7 +125,6 @@ public class PlayerMovement : MonoBehaviour
             float angle = Mathf.Atan2(lastLookAtDirection.y, lastLookAtDirection.x) * Mathf.Rad2Deg;
             rb.SetRotation(angle - 90);
         }
-
     }
 
     #region Input Functions
@@ -143,10 +143,13 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput != Vector2.zero)
         {
             playerAnimator.PlayMove();
+            ParticleManager.Instance.ToggleLoopingParticle(moveParticles, true);
+            
         }
         else
         {
             playerAnimator.PlayIdle();
+            ParticleManager.Instance.ToggleLoopingParticle(moveParticles, false);
         }
     }
 

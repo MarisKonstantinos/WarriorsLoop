@@ -866,6 +866,7 @@ GameObject:
   - component: {fileID: 1800010730284876296}
   - component: {fileID: 1800010730284876297}
   - component: {fileID: 377270629760506250}
+  - component: {fileID: 4521810340535097256}
   m_Layer: 7
   m_Name: ChestlEnemy
   m_TagString: Enemy
@@ -1063,6 +1064,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.65
+--- !u!114 &4521810340535097256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800010730284876302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05550fdcca8d73e45a7cd96d192759ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  breakSound: {fileID: 8300000, guid: 6788f685cb27fff44b052921dc0ac3b4, type: 3}
+  hitSound: {fileID: 8300000, guid: adc2c50aacc2c964cb36a90b8ff6aafc, type: 3}
 --- !u!1 &1800010730364473006
 GameObject:
   m_ObjectHideFlags: 0

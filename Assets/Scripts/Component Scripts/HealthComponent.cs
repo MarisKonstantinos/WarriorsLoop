@@ -14,7 +14,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
     [Tooltip("Set this to 0 for non enemy characters.") , Min(0), SerializeField] private int enemyScore = 0;
     private bool isDead = false;
     private AnimatorController animController;
-
+    private ImpactResponseComponent impactComponent;
     public event Action<float> OnKnockback;
     public event Action<GameObject> OnEnemyDeath;
     
@@ -23,6 +23,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
         SetMaxHealth(0f);
         currentHealth = maxHealth;
         UpdateHealthBar();
+        impactComponent = GetComponent<ImpactResponseComponent>();
     }
 
     public void SetMaxHealth(float buffedPercentage)
@@ -50,7 +51,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
             Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                if(hitPause)
+                if (hitPause)
                     CombatEffectsManager.Instance.HitPause(0.08f);
                 OnKnockback?.Invoke(0.2f);
                 rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
@@ -61,20 +62,27 @@ public class HealthComponent : MonoBehaviour , IDamageable
             {
                 animController.PlayHit();
             }
+            ParticleManager.Instance.PlayHitParticle(gameObject.transform.position);
         }
 
         if(currentHealth <= 0)
         {
             Die();
+            if (impactComponent)
+                impactComponent.PlayBreakFeedback();
+        }
+        else
+        {
+            if (impactComponent)
+                impactComponent.PlayHitFeedback();
         }
     }
 
     void Die()
     {
         isDead = true;
-        
         //Player layer
-        if(gameObject.layer == 6)
+        if (gameObject.layer == 6)
         {
             GameManager.Instance.TogglePlayerInput(false);
             GameManager.Instance.PlayerDied();
@@ -101,7 +109,6 @@ public class HealthComponent : MonoBehaviour , IDamageable
             if(gameObject.CompareTag("Healing item"))
             {
                 //Play sound
-                //Play particles
                 ParticleManager.Instance.PlayBoxDestroyParticles(gameObject.transform.position);
                 GameManager.Instance.HealPlayer(10);
                 Destroy(gameObject);

@@ -16,4 +16,4 @@ MonoBehaviour:
   damage: 40
   cooldown: 6
   range: 1.55
-  knockbackPower: 20
+  knockbackPower: 30

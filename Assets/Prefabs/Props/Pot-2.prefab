@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1084962327576210935}
   - component: {fileID: 5916659406272962894}
   - component: {fileID: 6103504225973512938}
+  - component: {fileID: 4753541939898841480}
   m_Layer: 7
   m_Name: Pot-2
   m_TagString: Healing item
@@ -159,3 +160,18 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   healthAmmountText: {fileID: 0}
   enemyScore: 0
+--- !u!114 &4753541939898841480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084962327576210923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05550fdcca8d73e45a7cd96d192759ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: 1
+  breakSound: {fileID: 8300000, guid: 535fe668699094940865d4907dc3432c, type: 3}
+  hitSound: {fileID: 8300000, guid: 8434c4353ccfd48468f5e9e377d609a0, type: 3}

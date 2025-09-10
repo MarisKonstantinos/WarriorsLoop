@@ -565,6 +565,7 @@ GameObject:
   - component: {fileID: 4201588408042612006}
   - component: {fileID: 8101911180805421499}
   - component: {fileID: 1319966659}
+  - component: {fileID: -771618335117171333}
   m_Layer: 7
   m_Name: SlimeEnemy
   m_TagString: Enemy
@@ -762,3 +763,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   attackAnimations: 0
+--- !u!114 &-771618335117171333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201588408042612014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05550fdcca8d73e45a7cd96d192759ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  breakSound: {fileID: 8300000, guid: 6788f685cb27fff44b052921dc0ac3b4, type: 3}
+  hitSound: {fileID: 8300000, guid: adc2c50aacc2c964cb36a90b8ff6aafc, type: 3}

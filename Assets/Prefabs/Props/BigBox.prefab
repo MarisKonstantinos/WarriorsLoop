@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5860663191616576193}
   - component: {fileID: 5860663191616576194}
   - component: {fileID: 8258983949609097271}
+  - component: {fileID: 8523671686136865967}
   m_Layer: 7
   m_Name: BigBox
   m_TagString: Healing item
@@ -27,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5860663191616576222}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.95, y: 2.65, z: -2.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -150,3 +151,18 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   healthAmmountText: {fileID: 0}
   enemyScore: 0
+--- !u!114 &8523671686136865967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5860663191616576222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05550fdcca8d73e45a7cd96d192759ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: 0
+  breakSound: {fileID: 8300000, guid: 3274bff71be43b74c87faa9a8e888194, type: 3}
+  hitSound: {fileID: 8300000, guid: c2e58e043e2f13d46839992bf90ca096, type: 3}

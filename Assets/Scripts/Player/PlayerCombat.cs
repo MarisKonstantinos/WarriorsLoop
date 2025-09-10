@@ -27,6 +27,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
     //Dash Attack Variables
     [SerializeField] private Image dashAttackCooldownImage;
     [SerializeField] private TextMeshProUGUI dashAttackCooldownText;
+    [SerializeField] private ParticleSystem dashAttackParticle;
     private float dashAttackCooldownTimer;
     private float dashAttackDurationTimer = 0;
     private bool moveOverlapCircle = false;
@@ -37,6 +38,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
     //Spin Attack Variables
     [SerializeField] private Image spinAttackCooldownImage;
     [SerializeField] private TextMeshProUGUI spinAttackCooldownText;
+    [SerializeField] private ParticleSystem spinAttackParticle;
     private float spinAttackCooldownTimer;
     private float spinAttackDurationTimer;
     public float spinAttackDuration;
@@ -148,6 +150,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
 
             if (playerAnimator)
                 playerAnimator.PlayDashAttack();
+            ParticleManager.Instance.PlaySimpleParticle(dashAttackParticle,gameObject.transform);
         }
     }
 
@@ -174,6 +177,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
 
             if (playerAnimator)
                 playerAnimator.PlaySpinAttack();
+            ParticleManager.Instance.PlaySimpleParticle(spinAttackParticle,gameObject.transform);
         }
     }
 
