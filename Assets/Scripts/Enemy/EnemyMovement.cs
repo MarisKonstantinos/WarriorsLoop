@@ -1,22 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour 
 {
     private Rigidbody2D rb;
-    private bool isMovementDisabled = false;
+    [SerializeField] private bool isMovementDisabled = false;
     private bool isDead = false;
     [SerializeField] private float movementSpeed;
+    private Vector2 moveDirection = Vector2.zero;
     
     [SerializeField] private LayerMask lineOfSightLayer;
     [SerializeField] private GameObject target;
     private AnimatorController enemyAnimator;
-    
 
     //Line Of Sight
     private bool hasLOS;
 
+    [Header("UI")]
+    public int numOfRays = 1;
+    public float radius = 1;
+    public float angleSpread = 30f;
+    Vector2 tempMoveDirection;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -39,12 +45,18 @@ public class EnemyMovement : MonoBehaviour
             target = GameManager.Instance.GetPlayer();
     }
 
+    private void Update()
+    {
+        DrawCircle(transform.position, radius, Color.red);
+    }
+
     private void FixedUpdate()
     {
-        if (!target || isMovementDisabled) return;
-        
-        Vector2 rayDirection = target.transform.position - transform.position;
-        RaycastHit2D ray = Physics2D.Raycast(transform.position, rayDirection,Mathf.Infinity,lineOfSightLayer);
+        if (!target || isMovementDisabled || numOfRays < 1) return;
+        DrawRays(numOfRays);
+        MoveEnemy(moveDirection);
+        /*Vector2 rayDirection = target.transform.position - transform.position;
+        RaycastHit2D ray = Physics2D.Raycast(transform.position, rayDirection, Mathf.Infinity, lineOfSightLayer);
         if (ray.collider != null)
         {
             hasLOS = ray.collider.CompareTag("Player");
@@ -59,10 +71,63 @@ public class EnemyMovement : MonoBehaviour
             }
             else
             {
-                enemyAnimator.PlayIdle();
                 Debug.DrawRay(transform.position, rayDirection, Color.red);
+                enemyAnimator.PlayIdle();
                 rb.velocity = Vector2.zero;
             }
+        }*/
+    }
+
+    private void DrawRays(int numOfRays)
+    {
+        hasLOS = false;
+        //Caluclating the length by multiplying with radius for Physics2D.Raycast
+        for( int i =0; i < numOfRays; i++)
+        {
+            float angleOffset = ((float)i / numOfRays  - 0.5f) * angleSpread;
+            Vector2 rayDirection = Quaternion.Euler(0, 0, angleOffset) * ((target.transform.position - transform.position).normalized * radius);
+            RaycastHit2D ray = Physics2D.Raycast(transform.position, rayDirection, radius, lineOfSightLayer);
+            
+            if (ray.collider != null)
+            {
+                if (ray.collider.CompareTag("Player"))
+                {
+                    hasLOS = true;
+                    tempMoveDirection = rayDirection;
+                    DrawRay(rayDirection, Color.green);
+                }
+                else
+                {
+                    DrawRay(rayDirection, Color.red);
+                }
+            }
+            else
+            {
+                DrawRay(rayDirection, Color.red);
+            }
+        }
+        moveDirection = hasLOS ? tempMoveDirection : Vector2.zero;
+    }
+
+    private void DrawRay(Vector3 direction, Color col)
+    {
+        Debug.DrawRay(transform.position, direction, col);
+    }
+
+    private void MoveEnemy(Vector2 direction)
+    {
+        if(direction != Vector2.zero)
+        {
+            rb.velocity = direction.normalized * movementSpeed;
+            enemyAnimator.PlayMove();
+
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            rb.SetRotation(angle - 90);
+        }
+        else
+        {
+            enemyAnimator.PlayIdle();
+            rb.velocity = Vector2.zero;
         }
     }
 
@@ -91,5 +156,19 @@ public class EnemyMovement : MonoBehaviour
     public void SetIsDead(bool _isDead)
     {
         isDead = _isDead;
+    }
+
+    private void DrawCircle(Vector3 center, float radius, Color color, int segments = 32)
+    {
+        float angleStep = 360f / segments;
+        Vector3 prevPoint = center + Vector3.right * radius;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = i * angleStep * Mathf.Deg2Rad;
+            Vector3 nextPoint = center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            Debug.DrawLine(prevPoint, nextPoint, color);
+            prevPoint = nextPoint;
+        }
     }
 }

@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    private int highScore = 0;
     private int playerScore = 0;
-    [SerializeField] private GameObject player;
-    [SerializeField] private Image playerScoreImage;
-    
+    private GameObject player;
+    private const string HighScoreKey = "HighScore";
+
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -28,22 +31,86 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!player)
-            player = GameObject.FindGameObjectWithTag("Player");
+        SceneManager.sceneLoaded += Initialize;
     }
-
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= Initialize;
+    }
     private void Start()
     {
-        UIManager.Instance.ScoreUpdate(playerScore);
+        
     }
 
+    /// <summary>
+    /// Initializes the player and the score.
+    /// </summary>
+    private void Initialize(Scene scene, LoadSceneMode mode)
+    {
+        if(scene.name.Equals("Main level"))
+        {
+            playerScore = 0;
+            UIManager.Instance.ScoreUpdate(playerScore);
+            if (!player)
+            {
+                player = GameObject.FindGameObjectWithTag("Player");
+            }
+        }
+
+        if(scene.name.Equals("Main menu"))
+        {
+            LoadHighScore();
+            MainMenuUIManager.Instance.UpdatePlayerHighScore(highScore);
+        }
+    }
+
+    public void LoadScene(string name)
+    {
+        SceneManager.LoadScene(name);
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit();
+#endif
+    }
+
+    private void SaveHighScore()
+    {
+        PlayerPrefs.SetInt(HighScoreKey, highScore);
+        PlayerPrefs.Save();  // important for WebGL to force save
+    }
+
+    private void LoadHighScore()
+    {
+        highScore = PlayerPrefs.GetInt(HighScoreKey, 0);
+    }
+
+    #region Main game functionalities
+
+    public void BackToMenu()
+    {
+        ToggleGamePause(false);
+        SceneManager.LoadScene("Main menu");
+    }
+
+    public void RestartLevel()
+    {
+        if (playerScore > highScore)
+            highScore = playerScore;
+        playerScore = 0;
+        Scene currentLevel = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentLevel.name);
+        TogglePlayerInput(true);
+        ToggleGamePause(false);
+    }
+    
     public GameObject GetPlayer()
     {
-        if (!player)
-        {
-            Debug.LogError("Returned null.");
-            return null;
-        }
+        if (!player) return null;
 
         return player;
     }
@@ -67,11 +134,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void TogglePlayerInput(bool _input)
+    public void TogglePlayerInput(bool toggle)
     {
         if (player.TryGetComponent(out PlayerInput input))
         {
-            if (!_input)
+            if (!toggle)
                 input.DeactivateInput();
             else
                 input.ActivateInput();
@@ -80,9 +147,13 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDied()
     {
+        if(playerScore > highScore)
+        {
+            highScore = playerScore;
+            SaveHighScore();
+        }
         UIManager.Instance.ToggleGameOverUI(true);
         StartCoroutine(delayPause());
-        
     }
 
     private IEnumerator delayPause()
@@ -97,15 +168,8 @@ public class GameManager : MonoBehaviour
         if (playerScore > 999)
             playerScore = 999;
         UIManager.Instance.ScoreUpdate(playerScore);
-        StartCoroutine(DelayDestroyEnemy(enemy));
+        
 
-    }
-
-    private IEnumerator DelayDestroyEnemy(GameObject enemy)
-    {
-        enemy.GetComponent<AnimatorController>().PlayDie();
-        yield return new WaitForSeconds(2f);
-        Destroy(enemy);
     }
 
     public void ToggleGamePause(bool _pause)
@@ -120,7 +184,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void HealPlayer(float value)
     {
         if(player.TryGetComponent(out HealthComponent playerHealth))
@@ -128,4 +191,5 @@ public class GameManager : MonoBehaviour
             playerHealth.HealDamage(value);
         }
     }
+    #endregion
 }

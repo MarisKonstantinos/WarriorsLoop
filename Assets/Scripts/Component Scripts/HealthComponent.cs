@@ -17,6 +17,7 @@ public class HealthComponent : MonoBehaviour , IDamageable
     private ImpactResponseComponent impactComponent;
     public event Action<float> OnKnockback;
     public event Action<GameObject> OnEnemyDeath;
+    public event Action<float> OnTakingDamage; 
     
     private void Awake()
     {
@@ -45,14 +46,16 @@ public class HealthComponent : MonoBehaviour , IDamageable
         if(gameObject.layer.ToString() != "Invincibility")
         {
             currentHealth -= value;
-
+            
+            OnTakingDamage?.Invoke(0.1f);
             UpdateHealthBar();
+
+            if (hitPause)
+                CombatEffectsManager.Instance.HitPause(0.08f);
 
             Rigidbody2D rb = this.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                if (hitPause)
-                    CombatEffectsManager.Instance.HitPause(0.08f);
                 OnKnockback?.Invoke(0.2f);
                 rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
             }
@@ -104,11 +107,12 @@ public class HealthComponent : MonoBehaviour , IDamageable
                 }
             
                 GameManager.Instance.EnemyDied(gameObject, enemyScore);
+                StartCoroutine(LateDestroy());
             }
             
             if(gameObject.CompareTag("Healing item"))
             {
-                //Play sound
+                //Play healing sound
                 ParticleManager.Instance.PlayBoxDestroyParticles(gameObject.transform.position);
                 GameManager.Instance.HealPlayer(10);
                 Destroy(gameObject);
@@ -120,7 +124,16 @@ public class HealthComponent : MonoBehaviour , IDamageable
     {
         if (healthBar)
         {
+            if (currentHealth < 0)
+                currentHealth = 0;
             healthBar.SetHealth(currentHealth, maxHealth);
         }
+    }
+
+    private IEnumerator LateDestroy()
+    {
+        gameObject.GetComponent<AnimatorController>().PlayDie();
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
     }
 }

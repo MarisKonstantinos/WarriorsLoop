@@ -19,6 +19,8 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private PlayerMovement playerMovement;
     private AnimatorController playerAnimator;
     private HashSet<HealthComponent> hitEnemies = new HashSet<HealthComponent>();
+    private bool canAttack = true;
+    private HealthComponent health;
 
     //Melee Attack Variables
     private float meleeCooldownTimer = 0;
@@ -48,6 +50,17 @@ public class PlayerCombat : MonoBehaviour, IAttack
         playerMovement = GetComponent<PlayerMovement>();
         playerAnimator = GetComponent<AnimatorController>();
         rb = GetComponent<Rigidbody2D>();
+        health = GetComponent<HealthComponent>();
+    }
+
+    private void OnEnable()
+    {
+        health.OnTakingDamage += DisableAttacksFor;
+    }
+
+    private void OnDisable()
+    {
+        health.OnTakingDamage -= DisableAttacksFor;
     }
 
     private void Update()
@@ -111,7 +124,8 @@ public class PlayerCombat : MonoBehaviour, IAttack
     {
         if(context.performed)
         {
-            if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0 || spinAttackDurationTimer > 0) return;
+            if (!meleeAttack || !playerMovement || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0
+                || spinAttackDurationTimer > 0 || !canAttack) return;
 
             if (meleeAttackOffset == 0) meleeAttackOffset = 1;
             Vector2 meleeAttackPoint = (Vector2)gameObject.transform.localPosition + playerMovement.GetMoveDirection()  / meleeAttackOffset;
@@ -128,7 +142,8 @@ public class PlayerCombat : MonoBehaviour, IAttack
     {
         if(context.performed)
         {
-            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0 || meleeCooldownTimer > 0 || spinAttackDurationTimer > 0) return;
+            if (!dashAttack || !playerMovement || dashAttackCooldownTimer > 0 || meleeCooldownTimer > 0 
+                || spinAttackDurationTimer > 0 || !canAttack) return;
             
             dashAttackDurationTimer = dashAttackDuration;
 
@@ -156,9 +171,10 @@ public class PlayerCombat : MonoBehaviour, IAttack
 
     public void OnSpinAttack(CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
         {
-            if (!spinAttack || !playerMovement || spinAttackCooldownTimer > 0 || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0) return;
+            if (!spinAttack || !playerMovement || spinAttackCooldownTimer > 0 || meleeCooldownTimer > 0 || dashAttackDurationTimer > 0
+                || !canAttack) return;
 
             spinAttackDurationTimer = spinAttackDuration;
             
@@ -217,11 +233,23 @@ public class PlayerCombat : MonoBehaviour, IAttack
         }
     }
 
-    public void OnDrawGizmosSelected()
+    private void DisableAttacksFor(float delay)
+    {
+        canAttack = false;
+        StartCoroutine(EnableAttacks(delay));
+    }
+
+    private IEnumerator EnableAttacks(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        canAttack = true;
+    }
+
+    /*public void OnDrawGizmosSelected()
     {
         //RED for melee attack
         if (meleeAttack == null || attackPoint == null) return;
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(dashAttackPoint, dashAttack.range);
-    }
+    }*/
 }

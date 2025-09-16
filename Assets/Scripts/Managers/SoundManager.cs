@@ -9,6 +9,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip musicClip;
+    [SerializeField] private AudioClip buttonHover;
+    [SerializeField] private AudioClip buttonPressed;
 
     private void Awake()
     {
@@ -30,7 +32,13 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
-        sfxSource.PlayOneShot(clip, volume);
+        
+        sfxSource.PlayOneShot(clip, 0.5f);
+    }
+
+    public bool IsSFXplaying()
+    {
+        return sfxSource.isPlaying;
     }
 
     public void PlayMusic(AudioClip clip, float volume = 1f)
@@ -38,11 +46,21 @@ public class SoundManager : MonoBehaviour
         musicSource.clip = clip;
         musicSource.volume = volume;
         musicSource.loop = true;
+        musicSource.priority = 0;
         musicSource.Play();
     }
 
     public void StopMusic()
     {
         musicSource.Stop();
+    }
+
+    public void ButtonHover()
+    {
+        PlaySFX(buttonHover);
+    }
+    public void ButtonPressed()
+    {
+        PlaySFX(buttonPressed);
     }
 }

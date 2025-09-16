@@ -25,7 +25,6 @@ public class ParticleManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
 

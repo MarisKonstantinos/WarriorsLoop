@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &526518781114777226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 526518781114777229}
+  - component: {fileID: 526518781114777228}
+  m_Layer: 0
+  m_Name: PARTICLE MANAGER
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &526518781114777229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526518781114777226}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.0945204, y: -1.7070142, z: 0.052126978}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &526518781114777228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526518781114777226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddb4ff9fdc50a3b47878810be0bb34ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitParticlesPrefab: {fileID: 4996297327425322161, guid: d7e315379d15be348b7af9b12cf3911c, type: 3}
+  healingItemDestroyParticlesPrefab: {fileID: 2467073536182338586, guid: 4e5d8542a51b2bc449c63faed4270269, type: 3}
+  moveParticlePrefab: {fileID: 4618779378608589716, guid: d7d85b669dd6af547910874ecd78078d, type: 3}

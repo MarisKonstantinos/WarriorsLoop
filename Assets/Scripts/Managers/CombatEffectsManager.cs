@@ -15,7 +15,6 @@ public class CombatEffectsManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
 

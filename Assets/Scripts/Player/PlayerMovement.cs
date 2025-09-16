@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 lastLookAtDirection;
     [SerializeField] private ParticleSystem moveParticles;
+    [SerializeField] private AudioClip footsteps;
 
     [Header("Dash")]
     public float dashPower;
@@ -28,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private UnityEngine.UI.Image dashCooldownImage;
     [SerializeField] private TextMeshProUGUI dashCooldownText;
+    [SerializeField] private AudioClip dashClip;
 
     private float dashTimer = 0f;
     //Is used to check if the player can dash - cooldown ------------- DO NOT USE: or dead
@@ -107,6 +109,14 @@ public class PlayerMovement : MonoBehaviour
                 bufferedInput.x = Mathf.Sign(lastLookAtDirection.x);
             }
         }
+
+        if (moveInput != Vector2.zero)
+        {
+            if (!SoundManager.Instance.IsSFXplaying())
+            {
+                SoundManager.Instance.PlaySFX(footsteps);
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -131,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
-
+        
         if (Mathf.Abs(moveInput.x) > 0.01)
             lastXPressTime = Time.time;
 
@@ -144,7 +154,6 @@ public class PlayerMovement : MonoBehaviour
         {
             playerAnimator.PlayMove();
             ParticleManager.Instance.ToggleLoopingParticle(moveParticles, true);
-            
         }
         else
         {
@@ -182,6 +191,7 @@ public class PlayerMovement : MonoBehaviour
         canDash = false;
         rb.velocity = moveInput * dashPower;
         dashTimer = dashCooldown;
+        SoundManager.Instance.PlaySFX(dashClip);
         if (dashCooldownText && dashCooldownImage)
         {
             dashCooldownImage.fillAmount = 1;

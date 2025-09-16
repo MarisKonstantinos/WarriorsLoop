@@ -707,11 +707,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca13a2b72729684d94fd5971507ea9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMovementDisabled: 0
   movementSpeed: 2
   lineOfSightLayer:
     serializedVersion: 2
     m_Bits: 832
   target: {fileID: 0}
+  numOfRays: 20
+  radius: 10
+  angleSpread: 50
 --- !u!114 &4201588408042612006
 MonoBehaviour:
   m_ObjectHideFlags: 0
