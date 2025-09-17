@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45551bbfda4057f4d906849a84ba98b7, type: 3}
-  m_Name: Enemy_TouchAttack
+  m_Name: HardEnemy_TouchAttack
   m_EditorClassIdentifier: 
   attackName: TouchAttack
-  damage: 10
+  damage: 15
   cooldown: 0.2
   range: 0.5
   knockbackPower: 10

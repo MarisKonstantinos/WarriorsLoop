@@ -16,7 +16,7 @@ public class ButtonFunctions : MonoBehaviour
     IEnumerator EnableButton()
     {
         button.interactable = false;
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(0.5f);
         button.interactable = true;
     }
 

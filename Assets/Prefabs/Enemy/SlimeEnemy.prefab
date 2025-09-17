@@ -731,7 +731,7 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 64
-  touchAttack: {fileID: 11400000, guid: ba756a2f6f65f044a9f47331ddb2463f, type: 2}
+  touchAttack: {fileID: 11400000, guid: 9f9ae078c9fc7834a99a437b0e467b76, type: 2}
 --- !u!95 &8101911180805421499
 Animator:
   serializedVersion: 5

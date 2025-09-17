@@ -11,6 +11,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip musicClip;
     [SerializeField] private AudioClip buttonHover;
     [SerializeField] private AudioClip buttonPressed;
+    [Range(0, 1)] public float musicVolume = 0.5f;
 
     private void Awake()
     {
@@ -27,13 +28,13 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        PlayMusic(musicClip,0.3f);
+        PlayMusic(musicClip,musicVolume);
     }
 
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         
-        sfxSource.PlayOneShot(clip, 0.5f);
+        sfxSource.PlayOneShot(clip, volume);
     }
 
     public bool IsSFXplaying()
@@ -57,10 +58,10 @@ public class SoundManager : MonoBehaviour
 
     public void ButtonHover()
     {
-        PlaySFX(buttonHover);
+        PlaySFX(buttonHover,0.3f);
     }
     public void ButtonPressed()
     {
-        PlaySFX(buttonPressed);
+        PlaySFX(buttonPressed,0.3f);
     }
 }

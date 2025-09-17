@@ -983,7 +983,6 @@ Transform:
   m_Children:
   - {fileID: 7800493399077533513}
   - {fileID: 7672424123049490662}
-  - {fileID: 5806250561606970179}
   - {fileID: 1329410046446107190}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1250,11 +1249,13 @@ MonoBehaviour:
   _Camera: {fileID: 0}
   movementSpeed: 4
   moveParticles: {fileID: 1206188258126588420}
+  footsteps: {fileID: 0}
   dashPower: 15
   dashDuration: 0.2
   dashCooldown: 1
   dashCooldownImage: {fileID: 0}
   dashCooldownText: {fileID: 0}
+  dashClip: {fileID: 0}
   diagonalBuffer: 0.2
 --- !u!58 &3208680780310681874
 CircleCollider2D:
@@ -2620,54 +2621,6 @@ Transform:
   m_Father: {fileID: 7672424123049490662}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6620904823193681104
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5806250561606970179}
-  - component: {fileID: 3690872802303864905}
-  m_Layer: 6
-  m_Name: DashAttackCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &5806250561606970179
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6620904823193681104}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3208680780310681879}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &3690872802303864905
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6620904823193681104}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1
 --- !u!1 &6687665397549949108
 GameObject:
   m_ObjectHideFlags: 0
@@ -3438,7 +3391,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4816333650259729318, guid: d7d85b669dd6af547910874ecd78078d, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4816333650259729318, guid: d7d85b669dd6af547910874ecd78078d, type: 3}
       propertyPath: m_LocalPosition.x

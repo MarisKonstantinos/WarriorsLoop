@@ -10,12 +10,12 @@ public class ImpactResponseComponent : MonoBehaviour
     public void PlayHitFeedback()
     {
         if (hitSound)
-            SoundManager.Instance.PlaySFX(hitSound);
+            SoundManager.Instance.PlaySFX(hitSound, 0.1f);
     }
 
     public void PlayBreakFeedback()
     {
         if (breakSound)
-            SoundManager.Instance.PlaySFX(breakSound);
+            SoundManager.Instance.PlaySFX(breakSound, 0.1f);
     }
 }

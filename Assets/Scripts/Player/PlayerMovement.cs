@@ -114,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!SoundManager.Instance.IsSFXplaying())
             {
-                SoundManager.Instance.PlaySFX(footsteps);
+                SoundManager.Instance.PlaySFX(footsteps,0.15f);
             }
         }
     }
@@ -191,7 +191,7 @@ public class PlayerMovement : MonoBehaviour
         canDash = false;
         rb.velocity = moveInput * dashPower;
         dashTimer = dashCooldown;
-        SoundManager.Instance.PlaySFX(dashClip);
+        SoundManager.Instance.PlaySFX(dashClip,0.15f);
         if (dashCooldownText && dashCooldownImage)
         {
             dashCooldownImage.fillAmount = 1;

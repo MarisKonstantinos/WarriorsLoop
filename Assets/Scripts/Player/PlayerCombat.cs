@@ -68,55 +68,20 @@ public class PlayerCombat : MonoBehaviour, IAttack
         if (meleeCooldownTimer > 0)
             meleeCooldownTimer -= Time.deltaTime;
 
-        //Dash attack cooldown
-        if (dashAttackCooldownTimer > 0)
-        {
-            dashAttackCooldownTimer -= Time.deltaTime;
-            if (dashAttackCooldownText && dashAttackCooldownImage)
-            {
-                dashAttackCooldownText.text = dashAttackCooldownTimer.ToString("#.#");
-                dashAttackCooldownImage.fillAmount = dashAttackCooldownTimer / dashAttack.cooldown;
-            }
-        }
+        CalculateDashAttackCd();
 
-        //Dash duration
-        if(dashAttackDurationTimer > 0)
-        {
-            dashAttackDurationTimer -= Time.deltaTime;
-            moveOverlapCircle = true;
-            
-        }
-        else
-        {
-            hitEnemies.Clear();
-            moveOverlapCircle = false;
-        }
-
-        //Spin attack cooldown
-        if(spinAttackCooldownTimer > 0)
-        {
-            spinAttackCooldownTimer -= Time.deltaTime;
-            if (spinAttackCooldownImage && spinAttackCooldownText)
-            {
-                spinAttackCooldownText.text = spinAttackCooldownTimer.ToString("#.#");
-                spinAttackCooldownImage.fillAmount = spinAttackCooldownTimer / spinAttack.cooldown; ;
-            }
-        }
-
-        //Spin duration
-        if (spinAttackDurationTimer > 0)
-        {
-            spinAttackDurationTimer -= Time.deltaTime;
-        }
+        CalculateSpinAttackCd();
     }
 
     private void FixedUpdate()
     {
-        if (moveOverlapCircle)
-        {
-            dashAttackPoint = gameObject.transform.localPosition;
-            Execute(dashAttackPoint, dashAttack);
-        }
+        if (moveOverlapCircle) ContinousExecute();
+    }
+
+    private void ContinousExecute()
+    {
+        dashAttackPoint = gameObject.transform.localPosition;
+        Execute(dashAttackPoint, dashAttack);
     }
 
     #region Attack Inputs
@@ -151,7 +116,6 @@ public class PlayerCombat : MonoBehaviour, IAttack
             playerMovement.DisableMovementFor(dashAttackDuration);
             rb.velocity = playerMovement.GetMoveDirection() * playerMovement.dashPower;
 
-            //Change it to dashAttackPoint. attackPoint is global var for DrawGizmos.
             playerMovement.ToggleInvincibilityFor(dashAttackDuration);
             dashAttackPoint = gameObject.transform.localPosition;
             hitEnemies.Clear();
@@ -166,6 +130,36 @@ public class PlayerCombat : MonoBehaviour, IAttack
             if (playerAnimator)
                 playerAnimator.PlayDashAttack();
             ParticleManager.Instance.PlaySimpleParticle(dashAttackParticle,gameObject.transform);
+        }
+    }
+
+    /// <summary>
+    /// Countdown and updating ui elements for dash attack cooldown 
+    /// </summary>
+    private void CalculateDashAttackCd()
+    {
+        //Dash attack cooldown
+        if (dashAttackCooldownTimer > 0)
+        {
+            dashAttackCooldownTimer -= Time.deltaTime;
+            if (dashAttackCooldownText && dashAttackCooldownImage)
+            {
+                dashAttackCooldownText.text = dashAttackCooldownTimer.ToString("#.#");
+                dashAttackCooldownImage.fillAmount = dashAttackCooldownTimer / dashAttack.cooldown;
+            }
+        }
+
+        //Dash duration. While in dash moveOverlapCircle is true which is calling execute in FixedUpdate to create the new overlap circle.
+        if (dashAttackDurationTimer > 0)
+        {
+            dashAttackDurationTimer -= Time.deltaTime;
+            moveOverlapCircle = true;
+
+        }
+        else
+        {
+            hitEnemies.Clear();
+            moveOverlapCircle = false;
         }
     }
 
@@ -197,8 +191,37 @@ public class PlayerCombat : MonoBehaviour, IAttack
         }
     }
 
+    /// <summary>
+    /// Countdown and updating ui elements for spin attack cooldown.
+    /// </summary>
+    private void CalculateSpinAttackCd()
+    {
+        //Spin attack cooldown
+        if (spinAttackCooldownTimer > 0)
+        {
+            spinAttackCooldownTimer -= Time.deltaTime;
+            if (spinAttackCooldownImage && spinAttackCooldownText)
+            {
+                spinAttackCooldownText.text = spinAttackCooldownTimer.ToString("#.#");
+                spinAttackCooldownImage.fillAmount = spinAttackCooldownTimer / spinAttack.cooldown; ;
+            }
+        }
+
+        //Spin attack duration
+        if (spinAttackDurationTimer > 0)
+        {
+            spinAttackDurationTimer -= Time.deltaTime;
+        }
+    }
+
     #endregion
 
+    /// <summary>
+    /// Executes the given attack at a specific point by checking for enemies within range,
+    /// calculating damage and knockback direction, and setting cooldowns for each attack type.
+    /// </summary>
+    /// <param name="attackPoint"> The world position from which the attack originates (usually the player or weapon position).</param>
+    /// <param name="attack">The <see cref="AttackData"/> containing attack settings such as name, damage, range, knockback, and cooldown.</param>
     public void Execute(Vector2 attackPoint, AttackData attack)
     {
         Collider2D[] hit = Physics2D.OverlapCircleAll(attackPoint, attack.range,enemyLayer);
@@ -207,6 +230,8 @@ public class PlayerCombat : MonoBehaviour, IAttack
         {
             meleeCooldownTimer = meleeAttack.cooldown;
             hitPause = true;
+            playerMovement.DisableMovementFor(0.2f);
+            DrawCircle(attackPoint, attack.range, Color.red,2);
         }
         else if(attack.name == "DashAttack")
         {
@@ -245,11 +270,19 @@ public class PlayerCombat : MonoBehaviour, IAttack
         canAttack = true;
     }
 
-    /*public void OnDrawGizmosSelected()
+    #region HelperFunctions
+    private void DrawCircle(Vector3 center, float radius, Color color,float duration = 1f, int segments = 32)
     {
-        //RED for melee attack
-        if (meleeAttack == null || attackPoint == null) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(dashAttackPoint, dashAttack.range);
-    }*/
+        float angleStep = 360f / segments;
+        Vector3 prevPoint = center + Vector3.right * radius;
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = i * angleStep * Mathf.Deg2Rad;
+            Vector3 nextPoint = center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            Debug.DrawLine(prevPoint, nextPoint, Random.ColorHSV(),duration);
+            prevPoint = nextPoint;
+        }
+    }
+    #endregion
 }

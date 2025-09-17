@@ -53,29 +53,9 @@ public class EnemyMovement : MonoBehaviour
     private void FixedUpdate()
     {
         if (!target || isMovementDisabled || numOfRays < 1) return;
+
         DrawRays(numOfRays);
         MoveEnemy(moveDirection);
-        /*Vector2 rayDirection = target.transform.position - transform.position;
-        RaycastHit2D ray = Physics2D.Raycast(transform.position, rayDirection, Mathf.Infinity, lineOfSightLayer);
-        if (ray.collider != null)
-        {
-            hasLOS = ray.collider.CompareTag("Player");
-            if (hasLOS)
-            {
-                Debug.DrawRay(transform.position, rayDirection, Color.green);
-                rb.velocity = rayDirection.normalized * movementSpeed;
-                enemyAnimator.PlayMove();
-
-                float angle = Mathf.Atan2(rayDirection.y, rayDirection.x) * Mathf.Rad2Deg;
-                rb.SetRotation(angle - 90);
-            }
-            else
-            {
-                Debug.DrawRay(transform.position, rayDirection, Color.red);
-                enemyAnimator.PlayIdle();
-                rb.velocity = Vector2.zero;
-            }
-        }*/
     }
 
     private void DrawRays(int numOfRays)
