@@ -231,7 +231,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
             meleeCooldownTimer = meleeAttack.cooldown;
             hitPause = true;
             playerMovement.DisableMovementFor(0.2f);
-            DrawCircle(attackPoint, attack.range, Color.red,2);
+           //DrawCircle(attackPoint, attack.range, Color.red,2);
         }
         else if(attack.name == "DashAttack")
         {
@@ -280,7 +280,7 @@ public class PlayerCombat : MonoBehaviour, IAttack
         {
             float angle = i * angleStep * Mathf.Deg2Rad;
             Vector3 nextPoint = center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-            Debug.DrawLine(prevPoint, nextPoint, Random.ColorHSV(),duration);
+            Debug.DrawLine(prevPoint, nextPoint, color,duration);
             prevPoint = nextPoint;
         }
     }

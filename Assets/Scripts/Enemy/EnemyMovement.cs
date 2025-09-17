@@ -47,18 +47,28 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
-        DrawCircle(transform.position, radius, Color.red);
+        //DrawCircle(transform.position, radius, Color.red);
     }
 
     private void FixedUpdate()
     {
         if (!target || isMovementDisabled || numOfRays < 1) return;
 
-        DrawRays(numOfRays);
+        PlayerDetection(numOfRays);
         MoveEnemy(moveDirection);
     }
 
-    private void DrawRays(int numOfRays)
+    /// <summary>
+    /// Detects whether the player is within the enemy's line of sight using multiple raycasts.
+    /// 
+    /// - Casts <paramref name="numOfRays"/> rays in a spread pattern centered toward the player's position.
+    /// - If any ray hits the player, sets hasLOS to true and stores the hit direction in tempMoveDirection.
+    /// - Updates moveDirection to point toward the player when visible, or resets it to Vector2.zero when not.
+    /// - Visualizes raycasts in the Scene view using <see cref="Debug.DrawRay"/> (green if hitting player, red otherwise).
+    /// </summary>
+    /// <param name="numOfRays">The number of rays to cast in the fan spread for detecting the player.</param>
+
+    private void PlayerDetection(int numOfRays)
     {
         hasLOS = false;
         //Caluclating the length by multiplying with radius for Physics2D.Raycast

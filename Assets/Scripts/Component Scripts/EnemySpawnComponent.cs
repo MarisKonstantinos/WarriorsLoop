@@ -73,7 +73,6 @@ public class EnemySpawnComponent : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        
         if (!currentEnemyWave.enemyPrefab) return;
 
         Vector2 spawnPosition;
