@@ -49,4 +49,10 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.Instance.RestartLevel();
     }
+
+    public void ResumeGame()
+    {
+        GameManager.Instance.TogglePlayerMovement(true);
+        GameManager.Instance.ToggleCursorVisibility(false);
+    }
 }

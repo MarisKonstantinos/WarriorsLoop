@@ -1,12 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Windows;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,10 +33,6 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= Initialize;
     }
-    private void Start()
-    {
-        
-    }
 
     /// <summary>
     /// Initializes the player and the score.
@@ -55,13 +47,20 @@ public class GameManager : MonoBehaviour
             {
                 player = GameObject.FindGameObjectWithTag("Player");
             }
+            ToggleCursorVisibility(false);
         }
 
         if(scene.name.Equals("Main menu"))
         {
             LoadHighScore();
             MainMenuUIManager.Instance.UpdatePlayerHighScore(highScore);
+            ToggleCursorVisibility(true);
         }
+    }
+
+    public void ToggleCursorVisibility(bool toggle)
+    {
+        Cursor.visible = toggle;
     }
 
     public void LoadScene(string name)
@@ -153,6 +152,7 @@ public class GameManager : MonoBehaviour
             SaveHighScore();
         }
         UIManager.Instance.ToggleGameOverUI(true);
+        ToggleCursorVisibility(true);
         StartCoroutine(delayPause());
     }
 

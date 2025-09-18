@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45551bbfda4057f4d906849a84ba98b7, type: 3}
   m_Name: SpinAttack
   m_EditorClassIdentifier: 
-  attackName: Dash Attack
+  attackName: Spin Attack
   damage: 40
   cooldown: 6
   range: 1.55

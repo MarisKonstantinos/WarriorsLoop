@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     public GameObject gameOverUI;
     [SerializeField] private TextMeshProUGUI playerScoreTMP;
     [SerializeField] private GameObject abilityDescriptionPanel;
+    [SerializeField] private GameObject escapeMenu;
+
     private void Awake()
     {
         if(Instance != null &&  Instance != this)
@@ -50,6 +52,18 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.ToggleGamePause(false);
             GameManager.Instance.TogglePlayerMovement(true);
             abilityDescriptionPanel.SetActive(false);
+        }
+    }
+
+    public void OnEscape(InputAction.CallbackContext context)
+    {
+        if (!escapeMenu) return;
+
+        if(context.performed)
+        {
+            GameManager.Instance.TogglePlayerMovement(false);
+            escapeMenu.SetActive(true);
+            GameManager.Instance.ToggleCursorVisibility(true);
         }
     }
 }
