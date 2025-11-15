@@ -45,6 +45,8 @@ public class PlayerCombat : MonoBehaviour, IAttack
     private float spinAttackDurationTimer;
     public float spinAttackDuration;
 
+    private Color randomColor;
+
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -229,9 +231,13 @@ public class PlayerCombat : MonoBehaviour, IAttack
         if(attack.name == "MeleeAttack")
         {
             meleeCooldownTimer = meleeAttack.cooldown;
-            hitPause = true;
+            //Disabled hit pause to feel the combat smoother.
+            hitPause = false;
             playerMovement.DisableMovementFor(0.2f);
-           //DrawCircle(attackPoint, attack.range, Color.red,2);
+            /*
+            RandomColor();
+            DrawCircle(attackPoint, attack.range, randomColor ,2);
+            */
         }
         else if(attack.name == "DashAttack")
         {
@@ -282,6 +288,20 @@ public class PlayerCombat : MonoBehaviour, IAttack
             Vector3 nextPoint = center + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
             Debug.DrawLine(prevPoint, nextPoint, color,duration);
             prevPoint = nextPoint;
+        }
+    }
+
+    private void RandomColor()
+    {
+        Color newColor = Random.ColorHSV();
+        if(randomColor == newColor)
+        {
+            newColor = Random.ColorHSV();
+            RandomColor();
+        }
+        else
+        {
+            randomColor = newColor;
         }
     }
     #endregion
