@@ -4,7 +4,7 @@
     Armed with your sword and reflexes, you’ll dash through enemies, unleash powerful spinning attacks, and fight to survive
     as waves of foes close in from all directions. Push yourself to score as high as possible before you finally fall to your enemies &mdash; then jump back in for another run.
 </p>
-<p>Play it in browser <a href="https://freesound.org/s/555411/">here</a></p>
+<p>Play it in browser <a href="https://kingpenguin97.itch.io/warriors-loop">here</a></p>
 <h1>How to play:</h1>
 <ul>
 <li>Move - WASD</li>
